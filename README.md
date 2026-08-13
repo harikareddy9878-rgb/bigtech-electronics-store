@@ -2,6 +2,8 @@
 
 BigTech is a compact Indian electronics shopping website covering product discovery, cart management, simulated checkout, payment outcomes, order tracking, and conversational support from Ezzie.
 
+[Open the live website](https://harikareddy9878-rgb.github.io/bigtech-electronics-store/)
+
 ![BigTech storefront](evidence/bigtech_storefront.png)
 
 ## Problem
@@ -60,4 +62,3 @@ Payments, orders, inventory, and delivery dates are simulated for demonstration.
 ## Author
 
 Harika
-
