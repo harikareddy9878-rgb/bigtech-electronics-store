@@ -13,11 +13,12 @@ await page.evaluate(() => localStorage.clear());
 await page.reload({ waitUntil: "networkidle" });
 
 const evidence = resolve(dirname(fileURLToPath(import.meta.url)), "../evidence");
-await page.screenshot({ path: resolve(evidence, "bigtech_storefront.png"), fullPage: true });
+const captureEvidence = process.env.BIGTECH_CAPTURE_EVIDENCE !== "0";
+if (captureEvidence) await page.screenshot({ path: resolve(evidence, "bigtech_storefront.png"), fullPage: true });
 
 await page.click('[data-add="BT-PH-101"]');
 await page.click('[data-view="cart"]');
-await page.screenshot({ path: resolve(evidence, "cart_checkout.png"), fullPage: true });
+if (captureEvidence) await page.screenshot({ path: resolve(evidence, "cart_checkout.png"), fullPage: true });
 await page.click('[data-view="checkout"]');
 await page.locator("#checkout-form").evaluate(form => form.requestSubmit());
 await page.waitForSelector("#success-view.active");
@@ -40,7 +41,7 @@ await page.click("#chat-launcher");
 await page.fill("#chat-input", "Suggest a gaming keyboard under 6000");
 await page.locator("#chat-form").evaluate(form => form.requestSubmit());
 await page.waitForTimeout(350);
-await page.screenshot({ path: resolve(evidence, "ezzie_assistant.png"), fullPage: true });
+if (captureEvidence) await page.screenshot({ path: resolve(evidence, "ezzie_assistant.png"), fullPage: true });
 
 const pageText = await page.locator("body").innerText();
 const errorOverlay = await page.locator('[data-nextjs-dialog], .vite-error-overlay, #webpack-dev-server-client-overlay').count();
