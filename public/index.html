@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="BigTech electronics shopping demo for India" />
+    <title>BigTech Electronics</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#home" aria-label="BigTech home"><span>B</span>BIGTECH</a>
+      <form class="search" id="search-form" role="search">
+        <input id="search-input" type="search" placeholder="Search phones, laptops, TVs and appliances" aria-label="Search catalogue" />
+        <button type="submit">Search</button>
+      </form>
+      <nav aria-label="Account and cart">
+        <button class="text-button" data-view="orders">My orders</button>
+        <button class="cart-button" data-view="cart">Cart <span id="cart-count">0</span></button>
+      </nav>
+    </header>
+
+    <div class="category-strip" id="category-strip" aria-label="Product categories"></div>
+
+    <main>
+      <section id="home-view" class="view active">
+        <div class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">SMART PICKS FOR EVERY HOME</p>
+            <h1>Technology that fits real life.</h1>
+            <p>Compare useful electronics and appliances with clear prices, stock, and delivery estimates.</p>
+            <button class="primary" data-scroll-products>Explore products</button>
+          </div>
+          <div class="hero-art" aria-label="Featured technology collection">
+            <div class="art-card art-phone">PHONE</div>
+            <div class="art-card art-laptop">LAPTOP</div>
+            <div class="art-card art-tv">4K TV</div>
+          </div>
+        </div>
+        <section class="benefits" aria-label="Shopping benefits">
+          <div><strong>Free delivery</strong><span>On orders above ₹499</span></div>
+          <div><strong>Easy returns</strong><span>Seven day return window</span></div>
+          <div><strong>Secure demo checkout</strong><span>No real payment collected</span></div>
+        </section>
+        <section id="products-section" class="catalogue-section">
+          <div class="section-heading">
+            <div><p class="eyebrow">THE BIGTECH EDIT</p><h2 id="catalogue-title">Popular electronics</h2></div>
+            <label>Sort <select id="sort-select"><option value="featured">Featured</option><option value="price-low">Price low to high</option><option value="price-high">Price high to low</option><option value="rating">Customer rating</option></select></label>
+          </div>
+          <div class="product-grid" id="product-grid"></div>
+        </section>
+      </section>
+
+      <section id="cart-view" class="view panel-page">
+        <button class="back-link" data-view="home">← Continue shopping</button>
+        <div class="section-heading"><div><p class="eyebrow">YOUR SELECTION</p><h1>Shopping cart</h1></div></div>
+        <div class="split-layout"><div id="cart-items" class="cart-list"></div><aside id="cart-summary" class="summary-card"></aside></div>
+      </section>
+
+      <section id="checkout-view" class="view panel-page">
+        <button class="back-link" data-view="cart">← Back to cart</button>
+        <div class="section-heading"><div><p class="eyebrow">FINAL STEP</p><h1>Checkout</h1></div></div>
+        <form id="checkout-form" class="checkout-layout">
+          <div class="checkout-form">
+            <h2>Delivery details</h2>
+            <div class="field-row"><label>Full name<input name="name" required value="Harika" /></label><label>Mobile number<input name="phone" required inputmode="numeric" pattern="[0-9]{10}" value="9876543210" /></label></div>
+            <label>Address<input name="address" required value="12 Lake View Road" /></label>
+            <div class="field-row"><label>City<input name="city" required value="Hyderabad" /></label><label>Pincode<input name="pincode" required pattern="[0-9]{6}" value="500081" /></label></div>
+            <h2>Payment simulation</h2>
+            <label>Outcome<select name="paymentOutcome"><option value="SUCCESS">Successful payment</option><option value="FAILURE">Failed payment</option></select></label>
+            <p class="form-note">This is a demonstration. Card or UPI details are never requested.</p>
+          </div>
+          <aside id="checkout-summary" class="summary-card"></aside>
+        </form>
+      </section>
+
+      <section id="orders-view" class="view panel-page">
+        <button class="back-link" data-view="home">← Back to store</button>
+        <div class="section-heading"><div><p class="eyebrow">PURCHASE HISTORY</p><h1>My orders</h1></div></div>
+        <div id="orders-list" class="orders-list"></div>
+      </section>
+
+      <section id="success-view" class="view panel-page narrow-page">
+        <div id="success-card" class="success-card"></div>
+      </section>
+    </main>
+
+    <button id="chat-launcher" class="chat-launcher" aria-label="Open Ezzie support">E</button>
+    <aside id="chat-panel" class="chat-panel" aria-label="Ezzie shopping assistant" aria-hidden="true">
+      <div class="chat-header"><div><strong>Ezzie</strong><span>BigTech support</span></div><button id="chat-close" aria-label="Close chat">×</button></div>
+      <div id="chat-messages" class="chat-messages"><div class="message assistant">Hi, I’m Ezzie. Ask me about products, stock, delivery, returns, your cart, or an order number.</div></div>
+      <div id="chat-suggestions" class="chat-suggestions"><button>Suggest a laptop</button><button>What is in my cart?</button><button>Return policy</button></div>
+      <form id="chat-form" class="chat-form"><input id="chat-input" placeholder="Ask Ezzie about BigTech" aria-label="Message Ezzie" /><button type="submit">Send</button></form>
+    </aside>
+
+    <footer><a class="brand footer-brand" href="#home"><span>B</span>BIGTECH</a><p>Electronics shopping demonstration for India. Payments and orders are simulated.</p><p>© 2026 BigTech</p></footer>
+
+    <script type="module" src="/js/app.js"></script>
+  </body>
+</html>
+
