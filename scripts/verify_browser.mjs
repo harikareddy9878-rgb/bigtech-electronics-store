@@ -5,7 +5,8 @@ const browser = await chromium.launch({
   executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
 });
 const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
-await page.goto("http://localhost:3000", { waitUntil: "networkidle" });
+const targetUrl = process.env.BIGTECH_URL || "http://localhost:3000";
+await page.goto(targetUrl, { waitUntil: "networkidle" });
 await page.evaluate(() => localStorage.clear());
 await page.reload({ waitUntil: "networkidle" });
 
