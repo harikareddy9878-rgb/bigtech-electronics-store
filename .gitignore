@@ -3,3 +3,5 @@ node_modules/
 backend/target/
 *.log
 
+.vercel
+evidence/local_verification.png

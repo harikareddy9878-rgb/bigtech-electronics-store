@@ -34,3 +34,13 @@ test("Ezzie suggests an in-stock laptop within budget", () => {
   assert.ok(products.find(product => product.id === response.productId).price <= 60000);
 });
 
+test("catalogue covers seven categories and twenty eight products", () => {
+  assert.equal(products.length, 28);
+  assert.equal(new Set(products.map(product => product.category)).size, 7);
+});
+
+test("Ezzie understands gaming requests", () => {
+  const response = answerEzzie("Suggest a gaming keyboard under 6000", { products, cart:[], orders:[] });
+  assert.ok(response.productId);
+  assert.equal(products.find(product => product.id === response.productId).category, "Gaming");
+});

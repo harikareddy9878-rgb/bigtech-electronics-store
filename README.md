@@ -1,35 +1,51 @@
 # BigTech Electronics Store
 
-BigTech is a compact Indian electronics shopping website covering product discovery, cart management, simulated checkout, payment outcomes, order tracking, and conversational support from Ezzie.
+BigTech is a responsive Indian electronics shopping project that connects product discovery, stock-aware cart behaviour, simulated checkout, payment outcomes, order history, delivery estimates, an account area, and Ezzie customer support.
 
-[Open the live website](https://harikareddy9878-rgb.github.io/bigtech-electronics-store/)
+[Open the live website](https://bigtech-electronics-store.vercel.app/)
 
 ![BigTech storefront](evidence/bigtech_storefront.png)
 
-## Problem
+## Project question
 
-An online electronics purchase involves more than a product grid. Stock must be checked before payment, delivery depends on the pincode and item category, payment can fail, and a customer needs a clear order status after checkout.
+Can a compact student project demonstrate the connected business rules behind an ecommerce journey instead of stopping at a product grid?
 
-## Purpose
+## Customer experience
 
-This project demonstrates an end-to-end retail flow with a responsive frontend and a Java Spring Boot service. The live static demo uses the same deterministic browser rules when the Java service is unavailable, while the backend can be run locally for REST API testing.
+The catalogue contains 28 products across phones, laptops, televisions, audio, appliances, wearables, and gaming. Customers can search, filter, sort, see stock conditions, manage quantities, calculate delivery, simulate successful or failed payment, receive an order number, review orders, and use a profile area.
 
-## What it includes
+Ezzie answers questions limited to BigTech. It can recommend an in-stock product within a budget, understand category words such as laptop, television, smartwatch, or gaming, describe the cart, explain delivery and returns, and look up saved demo order numbers.
 
-The catalogue contains phones, laptops, televisions, audio products, and home appliances with Indian Rupee prices. Customers can search, filter, add available products, update quantities, complete a simulated payment, view recent orders, and ask Ezzie for product, delivery, return, or order help.
+## Business rules
 
-The Java service coordinates inventory validation, payment simulation, and fulfilment estimates. Failure scenarios return explicit codes instead of pretending every order succeeds.
+| Situation | Result |
+| --- | --- |
+| Product has no stock | Add button is disabled |
+| Cart exceeds available quantity | Quantity increase is blocked |
+| Stock changes before payment | Checkout returns `STOCK_CHANGED` |
+| Payment simulation fails | Failed order is saved without a delivery date |
+| Payment succeeds | Confirmed order receives an order number and estimate |
+| Unrelated Ezzie request | Assistant keeps a website-only scope |
+
+## Technical design
+
+The browser application is written with HTML, CSS, and JavaScript modules. Cart and orders are kept in browser storage so the deployed demonstration works without collecting personal data.
+
+The Java Spring Boot service implements request validation and an order coordination sequence across inventory, payment, and fulfilment services. JUnit verifies successful orders, stock rejection, and failed payment behaviour. Frontend tests verify cart calculations, stock, payment, Ezzie scope, recommendations, and catalogue coverage.
 
 ## Repository guide
 
-| Folder | Contents |
+| Path | Contents |
 | --- | --- |
-| `public` | HTML, CSS, JavaScript, products, and browser demo |
+| `public` | Responsive storefront, catalogue, account, cart, checkout, orders, and Ezzie |
 | `backend` | Spring Boot order API and service tests |
-| `tests` | Frontend unit tests |
-| `evidence` | Verified website screenshots |
+| `tests` | JavaScript business-rule tests |
+| `scripts/verify_browser.mjs` | Browser journey verification and evidence capture |
+| `evidence` | Storefront, checkout, and assistant screenshots |
 | `reports` | Detailed PDF project report |
-| `docs` | Architecture and scenario notes |
+| `docs/architecture.md` | Component and request-flow notes |
+
+[Read the ten page project report](reports/BigTech_Electronics_Store_Report.pdf)
 
 ## Run the website
 
@@ -57,7 +73,7 @@ npm test
 cd backend && ./mvnw test
 ```
 
-Payments, orders, inventory, and delivery dates are simulated for demonstration. No real payment is collected.
+Payments, stock, customer details, orders, and delivery dates are simulated. No real payment is collected and no commercial order is created.
 
 ## Author
 

@@ -10,7 +10,9 @@ button { cursor:pointer; }
 .search input { flex:1; min-width:100px; border:0; padding:13px 16px; outline:none; }
 .search button { border:0; background:var(--orange); padding:0 22px; font-weight:700; }
 .topbar nav { margin-left:auto; display:flex; align-items:center; gap:12px; }
-.text-button,.cart-button { border:0; color:white; background:transparent; font-weight:600; padding:10px 12px; }
+.text-button,.cart-button,.account-button { border:0; color:white; background:transparent; font-weight:600; padding:10px 12px; }
+.account-button { display:flex;align-items:center;gap:8px;border:1px solid #496079;border-radius:8px; }
+.account-button span { width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#eaf1fc;color:var(--navy);font-weight:800; }
 .cart-button { border:1px solid #496079; border-radius:8px; }
 .cart-button span { margin-left:5px; background:var(--cyan); color:var(--navy); border-radius:50%; padding:2px 7px; }
 .category-strip { display:flex; justify-content:center; gap:34px; padding:13px 4vw; background:white; border-bottom:1px solid var(--line); overflow:auto; }
@@ -36,6 +38,11 @@ h1,h2 { font-family:"Space Grotesk",sans-serif; }
 .benefits div { padding:22px 28px; display:flex; flex-direction:column; border-right:1px solid var(--line); }
 .benefits div:last-child { border:0; }
 .benefits span { color:var(--muted); margin-top:4px; font-size:14px; }
+.trust-band { width:min(1120px,90%);margin:34px auto 0;display:grid;grid-template-columns:repeat(3,1fr);gap:14px; }
+.trust-band div { background:#132238;color:white;border-radius:12px;padding:20px;display:flex;gap:14px;align-items:flex-start; }
+.trust-band span { color:var(--cyan);font:700 18px "Space Grotesk"; }
+.trust-band p { margin:0;color:#cbd5e1;font-size:14px;line-height:1.45; }
+.trust-band strong { color:white;display:block;margin-bottom:3px; }
 .catalogue-section,.panel-page { width:min(1220px,90%); margin:70px auto; }
 .section-heading { display:flex; justify-content:space-between; align-items:end; gap:24px; margin-bottom:26px; }
 .section-heading h1,.section-heading h2 { margin:0; font-size:34px; }
@@ -89,6 +96,13 @@ h1,h2 { font-family:"Space Grotesk",sans-serif; }
 .success-card { margin-top:100px;text-align:center;padding:50px; }
 .success-icon { margin:auto;width:70px;height:70px;border-radius:50%;display:grid;place-items:center;background:#dcf8ea;color:var(--success);font-size:34px; }
 .success-card h1 { font-size:36px;margin-bottom:8px; }
+.account-grid { display:grid;grid-template-columns:repeat(2,1fr);gap:20px; }
+.profile-card,.account-card { background:white;border:1px solid var(--line);border-radius:14px;padding:26px;box-shadow:0 8px 24px #20324c0a; }
+.profile-card { grid-column:1/-1;display:flex;align-items:center;gap:18px;background:linear-gradient(120deg,#132238,#203c63);color:white; }
+.profile-card h2,.account-card h2 { margin:0 0 8px; }
+.profile-avatar { width:70px;height:70px;border-radius:50%;display:grid;place-items:center;background:var(--cyan);color:var(--navy);font:700 28px "Space Grotesk"; }
+.verified { display:inline-block;margin-top:8px;padding:5px 9px;border-radius:20px;background:#d8fff7;color:#075d4b;font-size:12px;font-weight:700; }
+.outline-button { border:1px solid #9cb0c9;border-radius:7px;background:white;color:var(--navy);padding:10px 13px;font-weight:700; }
 .chat-launcher { position:fixed;right:28px;bottom:28px;width:58px;height:58px;border:0;border-radius:18px 5px 18px 5px;background:var(--orange);color:var(--navy);font:700 24px "Space Grotesk";box-shadow:0 12px 28px #20324c40;z-index:35; }
 .chat-panel { display:none;position:fixed;right:28px;bottom:96px;width:min(390px,calc(100vw - 30px));height:580px;background:white;border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 60px #20324c40;z-index:34;overflow:hidden;grid-template-rows:auto 1fr auto auto; }
 .chat-panel.open { display:grid; }
@@ -108,6 +122,5 @@ h1,h2 { font-family:"Space Grotesk",sans-serif; }
 .chat-form button { border:0;background:var(--blue);color:white;border-radius:7px;padding:0 13px;font-weight:700; }
 footer { background:var(--navy);color:#cbd5e1;padding:38px 6vw;display:flex;align-items:center;justify-content:space-between;gap:30px;margin-top:80px; }
 .footer-brand { color:white; }
-@media (max-width:950px) { .product-grid{grid-template-columns:repeat(2,1fr)} .hero{grid-template-columns:1fr;padding-top:45px}.hero-art{display:none}.benefits{margin:0;width:100%;border-radius:0}.split-layout,.checkout-layout{grid-template-columns:1fr}.summary-card{position:static}.topbar{gap:12px}.text-button{display:none} }
-@media (max-width:620px) { .topbar{height:auto;flex-wrap:wrap;padding:14px 4vw}.search{order:3;flex-basis:100%}.category-strip{justify-content:flex-start}.hero{min-height:430px;padding:45px 6vw}.hero h1{font-size:46px}.benefits{grid-template-columns:1fr}.benefits div{border-right:0;border-bottom:1px solid var(--line)}.product-grid{grid-template-columns:1fr}.section-heading{align-items:flex-start;flex-direction:column}.field-row{grid-template-columns:1fr}.cart-item{align-items:flex-start;flex-wrap:wrap}.chat-panel{right:15px;bottom:88px}.chat-launcher{right:18px;bottom:18px}footer{align-items:flex-start;flex-direction:column} }
-
+@media (max-width:950px) { .product-grid{grid-template-columns:repeat(2,1fr)} .hero{grid-template-columns:1fr;padding-top:45px}.hero-art{display:none}.benefits{margin:0;width:100%;border-radius:0}.trust-band{grid-template-columns:1fr}.split-layout,.checkout-layout{grid-template-columns:1fr}.summary-card{position:static}.topbar{gap:12px}.text-button{display:none} }
+@media (max-width:620px) { .topbar{height:auto;flex-wrap:wrap;padding:14px 4vw}.search{order:3;flex-basis:100%}.account-button b{display:none}.category-strip{justify-content:flex-start}.hero{min-height:430px;padding:45px 6vw}.hero h1{font-size:46px}.benefits{grid-template-columns:1fr}.benefits div{border-right:0;border-bottom:1px solid var(--line)}.product-grid,.account-grid{grid-template-columns:1fr}.profile-card{grid-column:auto}.section-heading{align-items:flex-start;flex-direction:column}.field-row{grid-template-columns:1fr}.cart-item{align-items:flex-start;flex-wrap:wrap}.chat-panel{right:15px;bottom:88px}.chat-launcher{right:18px;bottom:18px}footer{align-items:flex-start;flex-direction:column} }

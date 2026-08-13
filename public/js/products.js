@@ -19,7 +19,14 @@ export const products = [
   { id:"BT-AP-502", name:"CleanWave 8kg Washing Machine", category:"Appliances", price:25990, mrp:31990, rating:4.5, stock:3, badge:"8KG" },
   { id:"BT-AP-503", name:"CoolBreeze 1.5 Ton Inverter AC", category:"Appliances", price:37990, mrp:46990, rating:4.3, stock:2, badge:"AC" },
   { id:"BT-AP-504", name:"QuickChef 28L Microwave Oven", category:"Appliances", price:12990, mrp:15990, rating:4.2, stock:6, badge:"28L" }
+  ,{ id:"BT-WE-601", name:"FitLoop AMOLED Smartwatch", category:"Wearables", price:5999, mrp:7999, rating:4.4, stock:11, badge:"AMOLED" }
+  ,{ id:"BT-WE-602", name:"Trail Active GPS Watch", category:"Wearables", price:8999, mrp:11999, rating:4.5, stock:5, badge:"GPS" }
+  ,{ id:"BT-WE-603", name:"Junior Track 4G Watch", category:"Wearables", price:4499, mrp:5999, rating:4.1, stock:0, badge:"4G" }
+  ,{ id:"BT-WE-604", name:"HealthRing Sleep Tracker", category:"Wearables", price:6999, mrp:8999, rating:4.3, stock:3, badge:"RING" }
+  ,{ id:"BT-GM-701", name:"Arcade Wireless Controller", category:"Gaming", price:3499, mrp:4499, rating:4.4, stock:12, badge:"PRO" }
+  ,{ id:"BT-GM-702", name:"Velocity Mechanical Keyboard", category:"Gaming", price:4299, mrp:5999, rating:4.6, stock:7, badge:"RGB" }
+  ,{ id:"BT-GM-703", name:"Focus 165Hz Gaming Monitor", category:"Gaming", price:16999, mrp:20999, rating:4.5, stock:4, badge:"165HZ" }
+  ,{ id:"BT-GM-704", name:"NovaPlay Handheld Console", category:"Gaming", price:24999, mrp:28999, rating:4.4, stock:2, badge:"PLAY" }
 ];
 
 export const categories = ["All", ...new Set(products.map(product => product.category))];
-

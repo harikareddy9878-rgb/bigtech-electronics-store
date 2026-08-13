@@ -18,7 +18,8 @@
         <button type="submit">Search</button>
       </form>
       <nav aria-label="Account and cart">
-        <button class="text-button" data-view="orders">My orders</button>
+        <button class="text-button" data-view="orders">Orders</button>
+        <button class="account-button" data-view="account"><span>H</span><b>Account</b></button>
         <button class="cart-button" data-view="cart">Cart <span id="cart-count">0</span></button>
       </nav>
     </header>
@@ -44,6 +45,11 @@
           <div><strong>Free delivery</strong><span>On orders above ₹499</span></div>
           <div><strong>Easy returns</strong><span>Seven day return window</span></div>
           <div><strong>Secure demo checkout</strong><span>No real payment collected</span></div>
+        </section>
+        <section class="trust-band" aria-label="BigTech service promises">
+          <div><span>01</span><p><strong>Clear stock</strong>Inventory is checked again before payment.</p></div>
+          <div><span>02</span><p><strong>Visible failures</strong>Failed payments stay visible without a delivery promise.</p></div>
+          <div><span>03</span><p><strong>Order support</strong>Ezzie can explain products, cart, delivery, returns, and orders.</p></div>
         </section>
         <section id="products-section" class="catalogue-section">
           <div class="section-heading">
@@ -81,6 +87,17 @@
         <button class="back-link" data-view="home">← Back to store</button>
         <div class="section-heading"><div><p class="eyebrow">PURCHASE HISTORY</p><h1>My orders</h1></div></div>
         <div id="orders-list" class="orders-list"></div>
+      </section>
+
+      <section id="account-view" class="view panel-page">
+        <button class="back-link" data-view="home">← Back to store</button>
+        <div class="section-heading"><div><p class="eyebrow">ACCOUNT</p><h1>Welcome, Harika</h1></div></div>
+        <div class="account-grid">
+          <section class="profile-card"><div class="profile-avatar">H</div><div><h2>Harika</h2><p class="order-meta">Demo shopper profile</p><span class="verified">Verified mobile</span></div></section>
+          <section class="account-card"><h2>Saved delivery address</h2><p>12 Lake View Road<br />Madhapur, Hyderabad<br />Telangana 500081</p><button class="outline-button" data-view="checkout">Use at checkout</button></section>
+          <section class="account-card"><h2>Recent activity</h2><p>Review confirmed, shipped, and payment-failed order examples in one place.</p><button class="outline-button" data-view="orders">Open orders</button></section>
+          <section class="account-card"><h2>Need help?</h2><p>Ask Ezzie about a product, order number, delivery estimate, payment, or return.</p><button class="outline-button" id="account-chat">Chat with Ezzie</button></section>
+        </div>
       </section>
 
       <section id="success-view" class="view panel-page narrow-page">

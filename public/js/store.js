@@ -22,7 +22,7 @@ export function addCartItem(cart, product, quantity = 1) {
 
 export function fulfilmentDate(category, pincode, today = new Date()) {
   const extra = category === "Appliances" || category === "Televisions" ? 4 : 2;
-  const remote = String(pincode).startsWith("11") ? 1 : 0;
+  const remote = /^[17-9]/.test(String(pincode)) ? 1 : 0;
   const result = new Date(today);
   result.setDate(result.getDate() + extra + remote);
   return result.toLocaleDateString("en-IN", { day:"numeric", month:"short", year:"numeric" });
@@ -59,9 +59,9 @@ export function answerEzzie(message, { products, cart, orders }) {
   if (/deliver|shipping|pincode|arrive/.test(text)) return { text:"Phones, laptops, and audio usually show a two day estimate. TVs and appliances use a four day estimate. The exact date appears at checkout after a six digit pincode is entered." };
   if (/payment|upi|card|failed/.test(text)) return { text:"Checkout simulates successful and failed payments without collecting UPI, card, or bank details. A failed payment is saved in My orders with no delivery date." };
   if (/order|track/.test(text)) return { text:"Open My orders from the header to view recent orders. You can also send an order number such as BIG-2608-123456 and I will check it." };
-  if (/laptop|phone|mobile|tv|television|audio|headphone|earbud|speaker|appliance|washing|fridge|refrigerator|microwave|conditioner|budget|suggest|recommend/.test(text)) {
+  if (/laptop|phone|mobile|tv|television|audio|headphone|earbud|speaker|appliance|washing|fridge|refrigerator|microwave|conditioner|watch|wearable|gaming|controller|keyboard|monitor|console|budget|suggest|recommend/.test(text)) {
     let candidates = products.filter(product => product.stock > 0);
-    const categoryMap = [[/laptop/,"Laptops"],[/phone|mobile/,"Phones"],[/tv|television/,"Televisions"],[/audio|headphone|earbud|speaker/,"Audio"],[/appliance|washing|fridge|refrigerator|microwave|conditioner/,"Appliances"]];
+    const categoryMap = [[/laptop/,"Laptops"],[/phone|mobile/,"Phones"],[/tv|television/,"Televisions"],[/audio|headphone|earbud|speaker/,"Audio"],[/appliance|washing|fridge|refrigerator|microwave|conditioner/,"Appliances"],[/watch|wearable|ring/,"Wearables"],[/gaming|controller|keyboard|monitor|console/,"Gaming"]];
     const category = categoryMap.find(([pattern]) => pattern.test(text))?.[1];
     if (category) candidates = candidates.filter(product => product.category === category);
     const budget = Number(text.match(/(?:under|below|budget(?: of)?)[ ₹]*(\d[\d,]*)/)?.[1]?.replaceAll(",", ""));
@@ -72,8 +72,7 @@ export function answerEzzie(message, { products, cart, orders }) {
     return { text:`My best match is ${choice.name} at ${money(choice.price)}. It is rated ${choice.rating} and has ${choice.stock} in stock.`, productId:choice.id };
   }
   if (/stock|available|out of stock/.test(text)) return { text:"Product cards show current demo stock. Out-of-stock items cannot be added, and checkout checks stock again before payment." };
-  if (/account|profile|address/.test(text)) return { text:"This compact demo stores cart and order history only in your browser. Delivery details are entered at checkout and no account registration is required." };
+  if (/account|profile|address/.test(text)) return { text:"Open Account in the header to see the saved demo profile, delivery address, and recent activity. Cart and orders stay in this browser." };
   if (/help|what can you do|ezzie/.test(text)) return { text:"I can suggest BigTech products, check your cart, explain stock, checkout, payment, delivery, returns, and look up demo order numbers. I stay within this website." };
   return { text:"I can help only with BigTech products, cart, checkout, payments, delivery, returns, and orders. Try asking for a laptop under ₹60,000 or send a BigTech order number." };
 }
-

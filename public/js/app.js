@@ -113,8 +113,8 @@ byId("sort-select").addEventListener("change", event => { state.sort = event.tar
 byId("checkout-form").addEventListener("submit", event => { event.preventDefault(); handleCheckout(event.currentTarget); });
 byId("chat-launcher").addEventListener("click", () => { byId("chat-panel").classList.add("open"); byId("chat-panel").setAttribute("aria-hidden","false"); byId("chat-input").focus(); });
 byId("chat-close").addEventListener("click", () => { byId("chat-panel").classList.remove("open"); byId("chat-panel").setAttribute("aria-hidden","true"); });
+byId("account-chat").addEventListener("click", () => { byId("chat-panel").classList.add("open"); byId("chat-panel").setAttribute("aria-hidden","false"); byId("chat-input").focus(); });
 byId("chat-form").addEventListener("submit", event => { event.preventDefault(); const text = byId("chat-input").value.trim(); if (!text) return; byId("chat-input").value = ""; askEzzie(text); });
 byId("chat-suggestions").addEventListener("click", event => { if (event.target.matches("button")) askEzzie(event.target.textContent); });
 
 renderCategories(); renderProducts(); updateCartCount(); save();
-
