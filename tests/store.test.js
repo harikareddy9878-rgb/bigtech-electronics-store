@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { products } from "../public/js/products.js";
+import { products, searchProducts } from "../public/js/products.js";
 import { addCartItem, answerEzzie, calculateTotals, createOrder } from "../public/js/store.js";
 
 test("adds an available product and blocks an out of stock product", () => {
@@ -78,4 +78,19 @@ test("confirmed order creates the complete customer delivery timeline", () => {
   ]);
   assert.equal(result.order.milestones.find(stage => stage.code === "PICKING").state, "CURRENT");
   assert.equal(result.order.milestones.filter(stage => stage.occurredAt).every(stage => stage.occurredAt <= result.order.date), true);
+});
+
+test("catalogue search matches product name words in any useful position", () => {
+  const results = searchProducts("nova 5g");
+  assert.equal(results[0]?.id, "BT-PH-101");
+});
+
+test("catalogue search matches product categories", () => {
+  const results = searchProducts("laptops");
+  assert.ok(results.length > 0);
+  assert.ok(results.every(product => product.category === "Laptops"));
+});
+
+test("catalogue search returns no suggestions for an unmatched query", () => {
+  assert.deepEqual(searchProducts("quantum toaster spaceship"), []);
 });

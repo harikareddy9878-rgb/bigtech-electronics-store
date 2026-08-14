@@ -30,3 +30,38 @@ export const products = [
 ];
 
 export const categories = ["All", ...new Set(products.map(product => product.category))];
+
+const normaliseSearch = value => value.trim().toLowerCase().replace(/\s+/g, " ");
+
+export function searchProducts(query, limit = 6) {
+  const normalisedQuery = normaliseSearch(query);
+  if (!normalisedQuery) return [];
+
+  const terms = normalisedQuery.split(" ");
+
+  return products
+    .map(product => {
+      const name = normaliseSearch(product.name);
+      const category = normaliseSearch(product.category);
+      const searchText = `${name} ${category}`;
+      if (!terms.every(term => searchText.includes(term))) return null;
+
+      const score = name === normalisedQuery
+        ? 0
+        : name.startsWith(normalisedQuery)
+          ? 1
+          : name.includes(normalisedQuery)
+            ? 2
+            : 3;
+
+      return { product, score };
+    })
+    .filter(Boolean)
+    .sort((left, right) =>
+      left.score - right.score ||
+      right.product.rating - left.product.rating ||
+      left.product.name.localeCompare(right.product.name)
+    )
+    .slice(0, limit)
+    .map(entry => entry.product);
+}

@@ -1,4 +1,4 @@
-import { categories, products } from "./products.js";
+import { categories, products, searchProducts } from "./products.js";
 import {
   addCartItem,
   answerEzzie,
@@ -66,6 +66,11 @@ const state = {
 };
 
 const byId = id => document.getElementById(id);
+const searchForm = byId("search-form");
+const searchInput = byId("search-input");
+const searchSuggestions = byId("search-suggestions");
+let currentSearchSuggestions = [];
+let activeSearchSuggestion = -1;
 const stockOf = product => Math.max(0, state.inventory[product.id] ?? product.stock);
 const stockedProducts = () => products.map(product => ({ ...product, stock:stockOf(product) }));
 const save = () => {
@@ -266,6 +271,66 @@ function askEzzie(text) {
   setTimeout(() => appendMessage(response.text, "assistant", response.productId), 180);
 }
 
+function closeSearchSuggestions() {
+  currentSearchSuggestions = [];
+  activeSearchSuggestion = -1;
+  searchSuggestions.hidden = true;
+  searchSuggestions.innerHTML = "";
+  searchInput.setAttribute("aria-expanded", "false");
+  searchInput.removeAttribute("aria-activedescendant");
+}
+
+function setActiveSearchSuggestion(index) {
+  if (!currentSearchSuggestions.length) return;
+  activeSearchSuggestion = index < 0
+    ? -1
+    : (index + currentSearchSuggestions.length) % currentSearchSuggestions.length;
+
+  searchSuggestions.querySelectorAll(".search-suggestion").forEach((option, optionIndex) => {
+    const isActive = optionIndex === activeSearchSuggestion;
+    option.classList.toggle("active", isActive);
+    option.setAttribute("aria-selected", String(isActive));
+    if (isActive) option.scrollIntoView({ block:"nearest" });
+  });
+
+  if (activeSearchSuggestion >= 0) {
+    searchInput.setAttribute("aria-activedescendant", `search-option-${activeSearchSuggestion}`);
+  } else {
+    searchInput.removeAttribute("aria-activedescendant");
+  }
+}
+
+function renderSearchSuggestions() {
+  const query = searchInput.value.trim();
+  if (!query) return closeSearchSuggestions();
+
+  currentSearchSuggestions = searchProducts(query);
+  activeSearchSuggestion = -1;
+  searchSuggestions.hidden = false;
+  searchInput.setAttribute("aria-expanded", "true");
+  searchInput.removeAttribute("aria-activedescendant");
+
+  searchSuggestions.innerHTML = currentSearchSuggestions.length
+    ? currentSearchSuggestions.map((product, index) => `
+      <button class="search-suggestion" id="search-option-${index}" type="button" role="option" aria-selected="false" data-search-product="${product.id}" data-search-index="${index}">
+        <span><strong>${product.name}</strong><small>${product.category}</small></span>
+        <b>${money(product.price)}</b>
+      </button>`).join("")
+    : `<div class="search-empty" role="option" aria-disabled="true" aria-selected="false"><strong>No products found</strong><span>Try another product name or category.</span></div>`;
+}
+
+function selectSearchProduct(productId) {
+  const product = productById(productId);
+  if (!product) return;
+  searchInput.value = product.name;
+  state.query = product.name.toLowerCase();
+  state.category = "All";
+  closeSearchSuggestions();
+  showView("home");
+  renderCategories();
+  byId("products-section").scrollIntoView({ behavior:"smooth" });
+}
+
 document.addEventListener("click", event => {
   const target = event.target.closest("button,a");
   if (!target) return;
@@ -277,7 +342,8 @@ document.addEventListener("click", event => {
   if (target.dataset.category) {
     state.category = target.dataset.category;
     state.query = "";
-    byId("search-input").value = "";
+    searchInput.value = "";
+    closeSearchSuggestions();
     showView("home");
     renderCategories();
     renderProducts();
@@ -306,10 +372,58 @@ document.addEventListener("click", event => {
   }
 });
 
-byId("search-form").addEventListener("submit", event => {
+searchInput.addEventListener("input", renderSearchSuggestions);
+searchInput.addEventListener("focus", () => {
+  if (searchInput.value.trim()) renderSearchSuggestions();
+});
+searchInput.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    closeSearchSuggestions();
+    return;
+  }
+
+  if ((event.key === "ArrowDown" || event.key === "ArrowUp") && searchSuggestions.hidden) {
+    renderSearchSuggestions();
+  }
+
+  if (!currentSearchSuggestions.length) return;
+
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    setActiveSearchSuggestion(activeSearchSuggestion + 1);
+  }
+
+  if (event.key === "ArrowUp") {
+    event.preventDefault();
+    setActiveSearchSuggestion(activeSearchSuggestion <= 0 ? currentSearchSuggestions.length - 1 : activeSearchSuggestion - 1);
+  }
+
+  if (event.key === "Enter" && activeSearchSuggestion >= 0) {
+    event.preventDefault();
+    selectSearchProduct(currentSearchSuggestions[activeSearchSuggestion].id);
+  }
+});
+searchSuggestions.addEventListener("mouseover", event => {
+  const option = event.target.closest("[data-search-index]");
+  if (option) setActiveSearchSuggestion(Number(option.dataset.searchIndex));
+});
+searchSuggestions.addEventListener("click", event => {
+  const option = event.target.closest("[data-search-product]");
+  if (option) selectSearchProduct(option.dataset.searchProduct);
+});
+document.addEventListener("pointerdown", event => {
+  if (!searchForm.contains(event.target)) closeSearchSuggestions();
+});
+
+searchForm.addEventListener("submit", event => {
   event.preventDefault();
-  state.query = byId("search-input").value.trim().toLowerCase();
+  if (activeSearchSuggestion >= 0 && currentSearchSuggestions[activeSearchSuggestion]) {
+    selectSearchProduct(currentSearchSuggestions[activeSearchSuggestion].id);
+    return;
+  }
+  state.query = searchInput.value.trim().toLowerCase();
   state.category = "All";
+  closeSearchSuggestions();
   showView("home");
   renderCategories();
   renderProducts();

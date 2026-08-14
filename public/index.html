@@ -16,8 +16,9 @@
     <header class="topbar">
       <a class="brand" href="#home" data-view="home" aria-label="BigTech home"><span>B</span>BIGTECH</a>
       <form class="search" id="search-form" role="search">
-        <input id="search-input" type="search" placeholder="Search phones, laptops, TVs and appliances" aria-label="Search catalogue" />
+        <input id="search-input" type="search" placeholder="Search phones, laptops, TVs and appliances" aria-label="Search catalogue" autocomplete="off" role="combobox" aria-autocomplete="list" aria-controls="search-suggestions" aria-expanded="false" />
         <button type="submit">Search</button>
+        <div class="search-suggestions" id="search-suggestions" role="listbox" hidden></div>
       </form>
       <nav aria-label="Account and cart">
         <button class="text-button" data-view="orders">Orders</button>
