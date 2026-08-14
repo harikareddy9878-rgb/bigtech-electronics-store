@@ -1,72 +1,188 @@
-"""Build the BigTech website and Java service report."""
-
 from __future__ import annotations
 
 from pathlib import Path
 
-from reportlab.lib import colors
-from reportlab.lib.enums import TA_CENTER
-from reportlab.lib.pagesizes import A4
-from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
-from reportlab.lib.units import cm
-from reportlab.platypus import Image, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from report_template import build_research_report
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "reports/BigTech_Electronics_Store_Report.pdf"
-NAVY = colors.HexColor("#132238")
-BLUE = colors.HexColor("#155eef")
-PALE = colors.HexColor("#eaf1fc")
-
-
-def footer(canvas, document):
-    canvas.saveState()
-    canvas.setFont("Helvetica", 8)
-    canvas.setFillColor(colors.HexColor("#667085"))
-    canvas.drawString(2 * cm, 1.1 * cm, "BigTech Electronics Store")
-    canvas.drawRightString(19 * cm, 1.1 * cm, f"Page {document.page}")
-    canvas.restoreState()
+FIGURES = ROOT / "reports/figures"
+EVIDENCE = ROOT / "evidence"
 
 
 def build_report() -> Path:
-    styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name="CoverTitle", parent=styles["Title"], fontSize=30, leading=35, textColor=NAVY, alignment=TA_CENTER, spaceAfter=18))
-    styles.add(ParagraphStyle(name="Section", parent=styles["Heading1"], fontSize=19, leading=24, textColor=NAVY, spaceAfter=13))
-    styles.add(ParagraphStyle(name="Sub", parent=styles["Heading2"], fontSize=12, leading=16, textColor=BLUE, spaceBefore=8, spaceAfter=5))
-    styles.add(ParagraphStyle(name="BodyR", parent=styles["BodyText"], fontSize=10, leading=15, textColor=colors.HexColor("#343d4b"), spaceAfter=9))
-    doc = SimpleDocTemplate(str(OUTPUT), pagesize=A4, leftMargin=2 * cm, rightMargin=2 * cm, topMargin=1.8 * cm, bottomMargin=1.8 * cm, title="BigTech Electronics Store", author="Harika")
-    story = []
-    table_style = TableStyle([("BACKGROUND", (0, 0), (-1, 0), NAVY), ("TEXTCOLOR", (0, 0), (-1, 0), colors.white), ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#cad4e2")), ("VALIGN", (0, 0), (-1, -1), "TOP"), ("PADDING", (0, 0), (-1, -1), 7)])
-    story.extend([Spacer(1, 3.0 * cm), Paragraph("BigTech Electronics Store", styles["CoverTitle"]), Paragraph("Retail journey, Java order coordination, and Ezzie support", ParagraphStyle(name="CoverSub", parent=styles["BodyR"], fontSize=14, leading=20, textColor=BLUE, alignment=TA_CENTER)), Spacer(1, 1.2 * cm), Table([["Project type", "Full stack ecommerce demonstration"], ["Catalogue", "28 products across 7 categories"], ["Backend", "Java and Spring Boot"], ["Prepared by", "Harika"]], colWidths=[4 * cm, 9 * cm], style=TableStyle([("BACKGROUND", (0, 0), (0, -1), PALE), ("FONTNAME", (0, 0), (0, -1), "Helvetica-Bold"), ("GRID", (0, 0), (-1, -1), 0.4, colors.HexColor("#cad4e2")), ("PADDING", (0, 0), (-1, -1), 9)])), PageBreak()])
     sections = [
-        ("1. Executive summary", ["BigTech is a responsive Indian electronics store demonstration with 28 products across phones, laptops, televisions, audio, appliances, wearables, and gaming.", "The complete customer journey covers discovery, stock, cart, checkout, successful and failed payments, confirmation, delivery estimate, order history, account, and Ezzie support.", "A Spring Boot service implements the order sequence independently from the browser demo and is verified with JUnit."]),
-        ("2. Problem and purpose", ["A product grid alone does not demonstrate ecommerce behaviour. Cart quantities, stock changes, payment outcomes, delivery estimates, order history, and support must agree.", "The project purpose is to demonstrate those connected rules at final-year student scope while keeping every commercial integration simulated.", "Success means both positive and failure paths work, tests cover the core rules, and public documentation states the boundaries clearly."]),
-        ("3. Customer journey", ["Customers search, filter, sort, inspect stock, and add an available product. Cart quantities cannot exceed the published demo stock.", "Checkout collects a demonstration address and a selected payment outcome without requesting card, bank, or UPI details. Stock is checked again before payment.", "Confirmed orders receive an order number and estimated date. Failed payments stay visible without a fulfilment promise. The account area links saved address, orders, and Ezzie."]),
-        ("4. Storefront design", ["The interface uses a dark navy retail header, focused search, category navigation, a light technology hero, service promises, responsive product cards, and clear price and stock states.", "The information architecture keeps orders, account, and cart available in the header. On mobile, the grid, checkout, and account sections collapse to one column.", "The deployed site is intentionally lightweight and does not require an account or external API to demonstrate the journey."]),
+        {
+            "title": "Project overview and problem statement",
+            "paragraphs": [
+                "BigTech is a student electronics store that connects catalogue browsing, cart totals, checkout, payment outcomes, delivery estimates, order history, and Ezzie customer support. I built it to demonstrate that a small retail project can still verify both successful and failed order behaviour.",
+                "The catalogue contains 28 synthetic products across seven electronics categories. A Java Spring Boot service provides the canonical order coordinator, while the browser interface remains deployable as a simple static site.",
+            ],
+        },
+        {
+            "title": "Architecture and boundaries",
+            "paragraphs": [
+                "The frontend uses HTML, CSS, and modular JavaScript. Catalogue and browser state are kept separate from calculations and order rules. Ezzie answers only BigTech questions and returns verified in-stock suggestions.",
+                "The Java service separates inventory, payment, fulfilment, and coordination responsibilities. All orders and payment outcomes are simulated. There is no authentication, shared production database, real payment provider, or courier integration.",
+            ],
+            "table": [
+                ["Component", "Responsibility"],
+                ["Inventory service", "Validate requested quantity"],
+                ["Payment service", "Return success or failure outcome"],
+                ["Fulfilment service", "Calculate estimated delivery"],
+                ["Order coordinator", "Apply sequence and stopping rules"],
+                ["Ezzie", "Website-specific product and order support"],
+            ],
+        },
+        {
+            "title": "Verification method",
+            "paragraphs": [
+                "Seven Node tests cover catalogue availability, totals, payment failure, assistant scope, budget recommendations, category coverage, and gaming intent. Three Java tests cover successful confirmation, stock rejection before payment, and payment failure without a delivery date.",
+                "Browser verification records the storefront, cart and checkout, and Ezzie assistant. These tests make business behaviour inspectable instead of relying only on a visual walkthrough.",
+            ],
+        },
+        {
+            "title": "Experiment 1: automated test suites",
+            "figure": FIGURES / "01_test_suites.png",
+            "caption": "Figure 1. Passing frontend and Java test cases.",
+            "explanation": [
+                [
+                    "What I tested",
+                    "Core catalogue, calculation, assistant, stock, payment, and fulfilment rules.",
+                ],
+                [
+                    "What the graph shows",
+                    "Seven frontend tests and three Java tests pass.",
+                ],
+                [
+                    "Conclusion",
+                    "The project verifies behaviour in both the browser logic and backend coordinator.",
+                ],
+            ],
+        },
+        {
+            "title": "Experiment 2: catalogue coverage",
+            "figure": FIGURES / "02_catalogue_coverage.png",
+            "caption": "Figure 2. Product and category counts in the synthetic catalogue.",
+            "explanation": [
+                [
+                    "What I tested",
+                    "Whether the catalogue contains the intended breadth without becoming unnecessarily large.",
+                ],
+                [
+                    "What the graph shows",
+                    "Twenty-eight products cover seven electronics categories.",
+                ],
+                [
+                    "Conclusion",
+                    "The scope is sufficient for search and recommendation scenarios while remaining easy to review.",
+                ],
+            ],
+        },
+        {
+            "title": "Experiment 3: order scenarios",
+            "figure": FIGURES / "03_order_scenarios.png",
+            "caption": "Figure 3. Relative workflow progress for three order outcomes.",
+            "explanation": [
+                [
+                    "What I tested",
+                    "Whether the coordinator stops before downstream actions after stock or payment failure.",
+                ],
+                [
+                    "What the graph shows",
+                    "A successful order reaches fulfilment, stock failure stops before payment, and payment failure produces no delivery estimate.",
+                ],
+                [
+                    "Conclusion",
+                    "The Java flow preserves ordering rules and avoids creating a false delivery promise after failure.",
+                ],
+            ],
+        },
+        {
+            "title": "Experiment 4: browser evidence",
+            "figure": FIGURES / "04_browser_evidence.png",
+            "caption": "Figure 4. Three committed browser-verification views.",
+            "explanation": [
+                [
+                    "What I tested",
+                    "Storefront rendering, cart and checkout behaviour, and Ezzie support.",
+                ],
+                [
+                    "What the graph shows",
+                    "Each principal customer-facing view has a committed verification capture.",
+                ],
+                [
+                    "Conclusion",
+                    "The public interface is supported by observable evidence in addition to unit tests.",
+                ],
+            ],
+        },
+        {
+            "title": "Experiment 5: backend component boundaries",
+            "figure": FIGURES / "05_backend_components.png",
+            "caption": "Figure 5. Implemented Java service boundaries.",
+            "explanation": [
+                [
+                    "What I tested",
+                    "Whether order responsibilities are separated rather than placed in one controller.",
+                ],
+                [
+                    "What the graph shows",
+                    "Inventory, payment, fulfilment, and coordination are implemented as distinct components.",
+                ],
+                [
+                    "Conclusion",
+                    "The design is small but provides a clear structure for explaining backend control flow.",
+                ],
+            ],
+        },
+        {
+            "title": "Interface test evidence",
+            "paragraphs": [
+                "The storefront capture below verifies product grouping, INR pricing, search, account access, cart visibility, and the overall electronics identity. Separate captures document checkout and the Ezzie support panel."
+            ],
+            "figure": EVIDENCE / "bigtech_storefront.png",
+            "caption": "Figure 6. Browser verification of the deployed BigTech storefront.",
+            "explanation": [
+                [
+                    "What I tested",
+                    "Whether the main catalogue is understandable and usable as the entry point to the order flow.",
+                ],
+                [
+                    "What the image shows",
+                    "The interface presents categories, products, prices, stock state, search, cart, and account navigation.",
+                ],
+                [
+                    "Conclusion",
+                    "The storefront is functional evidence, while the automated tests remain the source of business-rule verification.",
+                ],
+            ],
+        },
+        {
+            "title": "Limitations and reproducibility",
+            "paragraphs": [
+                "The data and all customer flows are synthetic. Browser persistence is device-local, and the static deployment does not make the Spring Boot service publicly available. Security, database transactions, shared inventory, payment webhooks, and courier tracking are outside scope.",
+                "The repository contains frontend source, Java service code, tests, browser evidence, five evaluation figures, architecture notes, and this report. Future work should deploy the backend, add a persistent order store, use idempotency keys, and verify full integration with a hosted test environment.",
+            ],
+        },
+        {
+            "title": "Conclusion",
+            "paragraphs": [
+                "BigTech demonstrates a complete but understandable electronics-shopping flow. Its value is not only the visible store; it is the tested relationship between catalogue availability, payment outcome, fulfilment, and customer support. The project presents frontend and Java skills without claiming production capabilities that are not implemented."
+            ],
+        },
     ]
-    for title, paragraphs in sections:
-        story.append(Paragraph(title, styles["Section"]))
-        for paragraph in paragraphs:
-            story.append(Paragraph(paragraph, styles["BodyR"]))
-        if title.startswith("3."):
-            story.append(Table([["Step", "Outcome"], ["Discover", "Search, category, sort, price, rating, and stock"], ["Cart", "Quantity control and INR totals"], ["Checkout", "Address validation and payment simulation"], ["Confirmation", "Order number and delivery estimate"], ["Account", "Saved profile, address, orders, and support"]], colWidths=[4 * cm, 10 * cm], style=table_style))
-        story.append(PageBreak())
-    story.extend([Paragraph("5. Verified storefront", styles["Section"]), Image(str(ROOT / "evidence/bigtech_storefront.png"), width=17 * cm, height=11 * cm), Paragraph("The storefront evidence is captured from the running application and shows the same catalogue and stock rules used by browser tests.", styles["BodyR"]), PageBreak()])
-    story.extend([Paragraph("6. Cart and checkout", styles["Section"]), Image(str(ROOT / "evidence/cart_checkout.png"), width=17 * cm, height=12.4 * cm), Paragraph("The cart repeats product, quantity, price, delivery, and total. Checkout labels payment as a simulation and revalidates inventory before creating an order.", styles["BodyR"]), PageBreak()])
-    story.extend([Paragraph("7. Ezzie support", styles["Section"]), Image(str(ROOT / "evidence/ezzie_assistant.png"), width=17 * cm, height=12.4 * cm), Paragraph("Ezzie supports product discovery, budget, stock, cart, checkout, payment, delivery, returns, and saved order numbers. It stays within the website and can add a recommendation directly to the cart.", styles["BodyR"]), PageBreak()])
-    final = [
-        ("8. Java order coordination", ["The API validates order items, customer name, pincode, and payment outcome. Inventory runs before payment, and fulfilment runs only after authorisation.", "Explicit failure codes distinguish STOCK_CHANGED from PAYMENT_FAILED. Large-item categories use a longer estimate and a Clock dependency keeps tests deterministic.", "The controller, coordinator, inventory, payment, and fulfilment classes keep responsibilities small enough to explain and test."], [["Component", "Responsibility"], ["OrderController", "Validate and return HTTP results"], ["InventoryService", "Check requested quantity"], ["PaymentService", "Simulate authorisation"], ["FulfilmentService", "Calculate an estimate"], ["OrderCoordinator", "Apply the sequence and failure rules"]]),
-        ("9. Verification, deployment, and limitations", ["Seven frontend tests cover stock, totals, failed payment, Ezzie scope, budget recommendation, catalogue coverage, and gaming intent. Three Java tests cover confirmation, stock rejection, and failed payment.", "Browser verification completes a successful order, confirms history, and checks a failed-payment path. The public site is deployed on Vercel with clean URLs and a single-page rewrite.", "The project has no real authentication, payment gateway, shared database, courier integration, or live inventory. Browser state is device-local and all customer and order data is simulated."], [["Scenario", "Expected behaviour"], ["Out of stock", "Cannot add"], ["Changed stock", "Checkout stops before payment"], ["Failed payment", "No delivery date"], ["Successful payment", "Order number and estimate"], ["Outside Ezzie scope", "Website-only boundary"]]),
-    ]
-    for title, paragraphs, rows in final:
-        story.append(Paragraph(title, styles["Section"]))
-        for paragraph in paragraphs:
-            story.append(Paragraph(paragraph, styles["BodyR"]))
-        story.append(Table(rows, colWidths=[5 * cm, 9 * cm], style=table_style))
-        if not title.startswith("9."):
-            story.append(PageBreak())
-    OUTPUT.parent.mkdir(parents=True, exist_ok=True)
-    doc.build(story, onFirstPage=footer, onLaterPages=footer)
-    return OUTPUT
+    return build_research_report(
+        OUTPUT,
+        "BigTech Electronics Store",
+        "Harika",
+        [
+            "This report presents a student electronics store with 28 synthetic products across seven categories, website-specific Ezzie support, deterministic order rules, and a Java Spring Boot backend. The project covers browsing, cart calculations, checkout, stock changes, payment failure, confirmation, delivery estimation, and order history.",
+            "Ten automated tests pass across JavaScript and Java. Five experiments document test coverage, catalogue scale, failure scenarios, browser evidence, and backend separation. All commercial data and payment outcomes are synthetic.",
+        ],
+        "electronics retail; JavaScript; Spring Boot; inventory; payment failure; testing",
+        sections,
+    )
 
 
 if __name__ == "__main__":

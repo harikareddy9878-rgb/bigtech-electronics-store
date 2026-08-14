@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
   <body>
+    <a class="skip-link" href="#products-section">Skip to products</a>
+    <div class="announcement"><span>BigTech Days</span> Free delivery on orders above ₹499 <b>·</b> Seven day returns on eligible products</div>
     <header class="topbar">
       <a class="brand" href="#home" aria-label="BigTech home"><span>B</span>BIGTECH</a>
       <form class="search" id="search-form" role="search">
@@ -20,7 +22,7 @@
       <nav aria-label="Account and cart">
         <button class="text-button" data-view="orders">Orders</button>
         <button class="account-button" data-view="account"><span>H</span><b>Account</b></button>
-        <button class="cart-button" data-view="cart">Cart <span id="cart-count">0</span></button>
+        <button class="cart-button" data-view="cart">Cart <span id="cart-count" aria-live="polite">0</span></button>
       </nav>
     </header>
 
@@ -30,21 +32,35 @@
       <section id="home-view" class="view active">
         <div class="hero">
           <div class="hero-copy">
+            <div class="hero-offer">NEW SEASON · SMARTER PRICES</div>
             <p class="eyebrow">SMART PICKS FOR EVERY HOME</p>
-            <h1>Technology that fits real life.</h1>
-            <p>Compare useful electronics and appliances with clear prices, stock, and delivery estimates.</p>
-            <button class="primary" data-scroll-products>Explore products</button>
+            <h1>Upgrade everyday life.</h1>
+            <p>Explore practical electronics and home appliances with transparent prices, verified stock, and delivery estimates before checkout.</p>
+            <div class="hero-actions"><button class="primary" data-scroll-products>Shop featured deals</button><button class="secondary" data-category="Laptops">Explore laptops</button></div>
           </div>
           <div class="hero-art" aria-label="Featured technology collection">
-            <div class="art-card art-phone">PHONE</div>
-            <div class="art-card art-laptop">LAPTOP</div>
-            <div class="art-card art-tv">4K TV</div>
+            <div class="art-glow"></div>
+            <div class="art-card art-phone"><span>5G</span><b>PHONE</b></div>
+            <div class="art-card art-laptop"><span>14”</span><b>LAPTOP</b></div>
+            <div class="art-card art-tv"><span>4K</span><b>SMART TV</b></div>
           </div>
         </div>
         <section class="benefits" aria-label="Shopping benefits">
           <div><strong>Free delivery</strong><span>On orders above ₹499</span></div>
           <div><strong>Easy returns</strong><span>Seven day return window</span></div>
           <div><strong>Secure demo checkout</strong><span>No real payment collected</span></div>
+        </section>
+        <section class="category-showcase" aria-labelledby="category-heading">
+          <div class="section-heading compact"><div><p class="eyebrow">SHOP YOUR WAY</p><h2 id="category-heading">Explore every category</h2></div></div>
+          <div class="category-tiles">
+            <button data-category="Phones"><span class="category-icon icon-phone"></span><strong>Phones</strong><small>Four picks</small></button>
+            <button data-category="Laptops"><span class="category-icon icon-laptop"></span><strong>Laptops</strong><small>Work and study</small></button>
+            <button data-category="Televisions"><span class="category-icon icon-tv"></span><strong>Televisions</strong><small>Home cinema</small></button>
+            <button data-category="Audio"><span class="category-icon icon-audio"></span><strong>Audio</strong><small>Personal sound</small></button>
+            <button data-category="Appliances"><span class="category-icon icon-appliance"></span><strong>Appliances</strong><small>Everyday help</small></button>
+            <button data-category="Wearables"><span class="category-icon icon-watch"></span><strong>Wearables</strong><small>Health and fitness</small></button>
+            <button data-category="Gaming"><span class="category-icon icon-gaming"></span><strong>Gaming</strong><small>Play better</small></button>
+          </div>
         </section>
         <section class="trust-band" aria-label="BigTech service promises">
           <div><span>01</span><p><strong>Clear stock</strong>Inventory is checked again before payment.</p></div>
@@ -53,7 +69,7 @@
         </section>
         <section id="products-section" class="catalogue-section">
           <div class="section-heading">
-            <div><p class="eyebrow">THE BIGTECH EDIT</p><h2 id="catalogue-title">Popular electronics</h2></div>
+            <div><p class="eyebrow">THE BIGTECH EDIT</p><h2 id="catalogue-title">Popular electronics</h2><p class="section-copy">Handpicked products with clear savings and live demonstration stock.</p></div>
             <label>Sort <select id="sort-select"><option value="featured">Featured</option><option value="price-low">Price low to high</option><option value="price-high">Price high to low</option><option value="rating">Customer rating</option></select></label>
           </div>
           <div class="product-grid" id="product-grid"></div>

@@ -45,7 +45,7 @@ The Java Spring Boot service implements request validation and an order coordina
 | `reports` | Detailed PDF project report |
 | `docs/architecture.md` | Component and request-flow notes |
 
-[Read the ten page project report](reports/BigTech_Electronics_Store_Report.pdf)
+[Read the research-style project report](reports/BigTech_Electronics_Store_Report.pdf). It includes an abstract, architecture, testing method, five explained verification figures, a browser test capture, limitations, and conclusion.
 
 ## Run the website
 

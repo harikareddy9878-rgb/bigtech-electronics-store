@@ -39,7 +39,9 @@ function renderProducts() {
   byId("product-grid").innerHTML = items.length ? items.map(product => {
     const stockClass = product.stock === 0 ? "out" : product.stock <= 2 ? "low" : "";
     const stockText = product.stock === 0 ? "Out of stock" : product.stock <= 2 ? `Only ${product.stock} left` : "In stock";
-    return `<article class="product-card"><div class="product-visual"><span>${product.badge}</span></div><div class="product-info"><small>${product.category}</small><h3>${product.name}</h3><div class="rating">★ ${product.rating}</div><div class="price"><strong>${money(product.price)}</strong><del>${money(product.mrp)}</del></div><p class="stock ${stockClass}">${stockText}</p><button data-add="${product.id}" ${product.stock === 0 ? "disabled" : ""}>${product.stock === 0 ? "Unavailable" : "Add to cart"}</button></div></article>`;
+    const visualClass = product.category.toLowerCase().replaceAll(" ", "-");
+    const discount = Math.round((1 - product.price / product.mrp) * 100);
+    return `<article class="product-card"><div class="product-visual visual-${visualClass}"><span class="offer-badge">${discount}% off</span><span class="product-device" aria-hidden="true"><b>${product.badge}</b></span></div><div class="product-info"><small>${product.category}</small><h3>${product.name}</h3><div class="rating"><span>★ ${product.rating}</span><em>Verified pick</em></div><div class="price"><strong>${money(product.price)}</strong><del>${money(product.mrp)}</del><span>${discount}% off</span></div><p class="stock ${stockClass}">${stockText}</p><button data-add="${product.id}" ${product.stock === 0 ? "disabled" : ""}>${product.stock === 0 ? "Unavailable" : "Add to cart"}</button></div></article>`;
   }).join("") : `<div class="empty">No products match this search. Try another word or category.</div>`;
 }
 
@@ -100,7 +102,7 @@ function askEzzie(text) {
 document.addEventListener("click", event => {
   const target = event.target.closest("button,a"); if (!target) return;
   if (target.dataset.view) showView(target.dataset.view);
-  if (target.dataset.category) { state.category = target.dataset.category; state.query = ""; byId("search-input").value = ""; renderCategories(); renderProducts(); }
+  if (target.dataset.category) { state.category = target.dataset.category; state.query = ""; byId("search-input").value = ""; renderCategories(); renderProducts(); byId("products-section").scrollIntoView({ behavior:"smooth" }); }
   if (target.dataset.add) addProduct(target.dataset.add);
   if (target.dataset.remove) { state.cart = state.cart.filter(item => item.id !== target.dataset.remove); save(); updateCartCount(); renderCart(); }
   if (target.dataset.quantity) { const product = products.find(item => item.id === target.dataset.quantity); const change = Number(target.dataset.change); state.cart = state.cart.map(item => item.id === target.dataset.quantity ? { ...item, quantity:Math.max(1,Math.min(product.stock,item.quantity + change)) } : item); save(); renderCart(); }
