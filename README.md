@@ -28,9 +28,9 @@ I built BigTech as one connected electronics order journey. The browser applicat
 | Categories | 7 |
 | Customer delivery stages | 8 |
 | Checkout outcomes | 3 |
-| JavaScript tests | 10 passed |
+| JavaScript tests | 13 passed |
 | Java tests | 4 passed |
-| Total automated tests | 14 passed |
+| Total automated tests | 17 passed |
 
 The catalogue is intentionally bounded because this project evaluates software behavior rather than statistical learning. The test data includes available, low stock and unavailable products, plus confirmed, shipped, out for delivery, delivered, payment failed and stock changed orders.
 
