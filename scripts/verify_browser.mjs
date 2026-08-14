@@ -14,7 +14,7 @@ const captureEvidence = process.env.BIGTECH_CAPTURE_EVIDENCE !== "0";
 await page.goto(targetUrl, { waitUntil:"networkidle" });
 await page.evaluate(() => localStorage.clear());
 await page.reload({ waitUntil:"networkidle" });
-if (captureEvidence) await page.screenshot({ path:resolve(evidence, "bigtech_storefront.png") });
+if (captureEvidence) await page.screenshot({ path:resolve(evidence, "bigtech_storefront_overview.png") });
 
 const stockBefore = await page.locator('[data-add="BT-PH-101"]').locator("..").locator(".stock").innerText();
 await page.click('[data-add="BT-PH-101"]');
@@ -62,7 +62,7 @@ await page.click("#chat-launcher");
 await page.fill("#chat-input", "Check BIG-DEMO-731902");
 await page.locator("#chat-form").evaluate(form => form.requestSubmit());
 await page.waitForTimeout(350);
-if (captureEvidence) await page.screenshot({ path:resolve(evidence, "ezzie_assistant.png"), fullPage:true });
+if (captureEvidence) await page.screenshot({ path:resolve(evidence, "ezzie_support.png") });
 const assistantText = await page.locator("#chat-messages").innerText();
 
 const pageText = await page.locator("body").innerText();

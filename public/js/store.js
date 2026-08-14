@@ -22,10 +22,14 @@ const completedThrough = {
   Delivered:7
 };
 
-const eventTime = (date, minutes) => new Date(date.getTime() + minutes * 60_000).toISOString();
+const eventTime = (date, minutes, observedAt) => new Date(Math.min(
+  date.getTime() + minutes * 60_000,
+  observedAt.getTime()
+)).toISOString();
 
-export function customerTimeline({ date, status, failureCode }) {
+export function customerTimeline({ date, status, failureCode, observedAt = new Date() }) {
   const createdAt = new Date(date);
+  const observed = new Date(observedAt);
   if (failureCode) {
     const stoppedIndex = failureCode === "STOCK_CHANGED" ? 1 : 2;
     return milestoneTemplates.map(([code, label, message, minutes], index) => ({
@@ -39,7 +43,7 @@ export function customerTimeline({ date, status, failureCode }) {
             ? "The requested quantity was no longer available. Payment was not attempted."
             : "Payment was declined. The temporary stock hold was released automatically."
           : "This stage was not started.",
-      occurredAt:index <= stoppedIndex ? eventTime(createdAt, minutes) : null
+      occurredAt:index <= stoppedIndex ? eventTime(createdAt, minutes, observed) : null
     }));
   }
 
@@ -49,7 +53,7 @@ export function customerTimeline({ date, status, failureCode }) {
     label,
     state:status === "Delivered" || index < currentIndex ? "COMPLETED" : index === currentIndex ? "CURRENT" : "UPCOMING",
     message,
-    occurredAt:index <= currentIndex ? eventTime(createdAt, minutes) : null
+    occurredAt:index <= currentIndex ? eventTime(createdAt, minutes, observed) : null
   }));
 }
 
@@ -141,7 +145,7 @@ export function createOrder({ cart, products, address, paymentOutcome, now = new
       status:"Stock changed",
       failureCode:"STOCK_CHANGED",
       inventory:inventoryResult(cart, products, "REJECTED", conflictProductId),
-      milestones:customerTimeline({ date:now, status:"Stock changed", failureCode:"STOCK_CHANGED" }),
+      milestones:customerTimeline({ date:now, status:"Stock changed", failureCode:"STOCK_CHANGED", observedAt:now }),
       workflow:workflow("STOCK_CHANGED", address)
     };
     return { ok:false, code:"STOCK_CHANGED", productId:conflictProductId, order };
@@ -153,7 +157,7 @@ export function createOrder({ cart, products, address, paymentOutcome, now = new
       status:"Payment failed",
       failureCode:"PAYMENT_FAILED",
       inventory:inventoryResult(cart, products, "RELEASED"),
-      milestones:customerTimeline({ date:now, status:"Payment failed", failureCode:"PAYMENT_FAILED" }),
+      milestones:customerTimeline({ date:now, status:"Payment failed", failureCode:"PAYMENT_FAILED", observedAt:now }),
       workflow:workflow("PAYMENT_FAILED", address)
     };
     return { ok:false, code:"PAYMENT_FAILED", order };
@@ -167,7 +171,7 @@ export function createOrder({ cart, products, address, paymentOutcome, now = new
     status:"Confirmed",
     delivery:fulfilmentDate(slowest, address.pincode, now),
     inventory:inventoryResult(cart, products, "COMMITTED"),
-    milestones:customerTimeline({ date:now, status:"Confirmed" }),
+    milestones:customerTimeline({ date:now, status:"Confirmed", observedAt:now }),
     workflow:workflow("SUCCESS", address)
   };
   return { ok:true, order };

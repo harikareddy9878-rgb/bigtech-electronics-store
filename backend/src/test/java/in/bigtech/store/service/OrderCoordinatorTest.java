@@ -78,5 +78,8 @@ class OrderCoordinatorTest {
         assertThat(response.milestones().get(3).code()).isEqualTo("PICKING");
         assertThat(response.milestones().get(3).state()).isEqualTo("CURRENT");
         assertThat(response.milestones().get(7).code()).isEqualTo("DELIVERED");
+        assertThat(response.milestones())
+                .filteredOn(stage -> stage.occurredAt() != null)
+                .allMatch(stage -> !stage.occurredAt().isAfter(Instant.parse("2026-08-13T12:00:00Z")));
     }
 }

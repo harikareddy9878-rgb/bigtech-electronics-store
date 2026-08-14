@@ -17,7 +17,7 @@ def build_report() -> Path:
             "paragraphs": [
                 "BigTech is an Indian electronics shopping application that connects product discovery, current stock, cart rules, simulated checkout, payment outcomes, inventory reservation, fulfilment, delivery tracking, order history, account information and Ezzie support. I selected this problem because a visible storefront alone does not demonstrate the decisions that protect a customer order.",
                 "The root cause in many compact demonstrations is disconnected state. A product card may show one available quantity while the cart uses the original quantity, a failed payment may reduce stock permanently, and a confirmed order may stop at an order number without showing how it reaches delivery.",
-                "The purpose of BigTech is to make the complete lifecycle reproducible at a final year student scope. The customer interface remains simple, while JavaScript and Java contracts preserve the inventory, payment, fulfilment and delivery evidence behind each result.",
+                "The purpose of BigTech is to make the complete lifecycle reproducible within a focused personal project. The customer interface remains simple, while JavaScript and Java contracts preserve the inventory, payment, fulfilment and delivery evidence behind each result.",
             ],
             "table": [
                 ["Objective", "Implemented evidence"],
@@ -46,7 +46,7 @@ def build_report() -> Path:
             "title": "Customer journey",
             "paragraphs": [
                 "A visitor can search, filter and sort the catalogue, review discount and stock, add an available item, change quantity within the current limit and inspect order totals. Ezzie can recommend an in stock product within a declared budget and add the suggestion to the same cart.",
-                "Checkout collects demonstration delivery details and provides three reproducible outcomes: successful payment, failed payment and an item becoming unavailable. Every result receives a saved order reference, including failures, so the reviewer can inspect what stopped and which side effects were prevented.",
+                "Checkout collects demonstration delivery details and provides three reproducible outcomes: successful payment, failed payment and an item becoming unavailable. Every result receives a saved order reference, including failures, so the stopping point and prevented side effects remain visible.",
                 "Confirmed orders open a detailed journey with received, reserved, paid, picking, packed, shipped, out for delivery and delivered stages. The page also shows the inventory quantity before checkout, the amount held and the amount available after the branch completes.",
             ],
         },
@@ -152,7 +152,7 @@ def build_report() -> Path:
             "paragraphs": [
                 "The storefront capture verifies the entry point used in browser testing. Category navigation, product artwork, prices, discount, stock, search, account and cart are visible without exposing internal workflow terminology. Separate captures in the evidence directory document checkout and Ezzie.",
             ],
-            "figure": EVIDENCE / "bigtech_storefront.png",
+            "figure": EVIDENCE / "bigtech_storefront_overview.png",
             "caption": "Figure 8. Deployed BigTech storefront used as the entry point to the verified order flow.",
             "explanation": [
                 ["Test question", "Is the electronics catalogue understandable and usable before the technical order rules are exercised?"],
@@ -186,7 +186,7 @@ def build_report() -> Path:
             "paragraphs": [
                 "Products, stock, customer information, payment results, orders and delivery events are synthetic. Browser local storage is not a shared database and must not be interpreted as warehouse inventory. The static public site does not call the local Spring Boot service.",
                 "The project does not contain authentication, database transactions, real payment, reservation expiry, courier integration, returns settlement, fraud checks or production monitoring. The Java synchronization only protects one service process and is not a replacement for database level concurrency control.",
-                "These limitations define a clear student project boundary. The implemented evidence supports claims about deterministic coordination, inventory recovery, delivery state and customer explanation, not commercial readiness.",
+                "These limitations define a clear project boundary. The implemented evidence supports claims about deterministic coordination, inventory recovery, delivery state and customer explanation, not commercial readiness.",
                 "The catalogue size must also be interpreted correctly. Twenty eight records provide category, price and stock variation for software tests; they do not represent commercial assortment, demand history or recommendation training data. Product ratings and discounts are demonstration values.",
                 "Security review is limited to validated request fields, local browser persistence and the absence of payment credentials. A real service would require authenticated ownership checks, encryption policy, rate limiting, dependency scanning, audit events and a documented response to payment or account incidents.",
             ],
@@ -204,11 +204,11 @@ def build_report() -> Path:
             "title": "Conclusion",
             "paragraphs": [
                 "BigTech demonstrates a complete electronics order from product discovery through inventory reservation, payment, picking, packing, shipment and delivery. The most important result is that confirmation, payment failure and stock conflict have different, verified side effects rather than different messages over the same state.",
-                "The combination of a responsive customer application, deterministic Ezzie support, Java multi agent coordination, automated tests and visible limitations is appropriate for a final year student portfolio. It shows software design and failure reasoning without claiming production features that are outside the repository.",
+                "The combination of a responsive customer application, deterministic Ezzie support, Java multi agent coordination, automated tests and visible limitations demonstrates software design and failure reasoning without claiming production features that are outside the repository.",
                 "The project provides evidence for frontend JavaScript, responsive interface work, Java and Spring Boot structure, REST contract design, state transition reasoning, automated testing, deployment and technical writing. These skills are demonstrated through connected behavior instead of separate sample programs.",
-                "The final result is a small but complete lifecycle study. A reviewer can purchase a unit, see catalogue stock change, inspect the delivery path, reproduce a declined payment, confirm the reservation returned and reproduce a stock conflict that never reaches payment. That traceability is the main contribution of BigTech.",
-                "The confirmed branch can be audited from start to finish. Inventory records the available quantity, the requested unit is held, payment is approved, the held quantity becomes committed, the delivery estimate is calculated and picking becomes the current milestone. The browser writes the new stock value and the saved order remains available for Ezzie lookup.",
-                "The two failure branches provide equally important evidence. A declined payment returns the held unit and prevents fulfilment. A stock conflict rejects the reservation and prevents payment itself. Both attempts remain visible with stopped milestones, which lets a reviewer verify safe recovery instead of accepting a temporary alert message.",
+                "The final result is a small but complete lifecycle study. A unit can be purchased, the catalogue stock change remains visible, the delivery path can be followed, a declined payment returns its reservation and a stock conflict never reaches payment. That traceability is the main contribution of BigTech.",
+                "The confirmed branch can be followed from start to finish. Inventory records the available quantity, the requested unit is held, payment is approved, the held quantity becomes committed, the delivery estimate is calculated and picking becomes the current milestone. The browser writes the new stock value and the saved order remains available for Ezzie lookup.",
+                "The two failure branches provide equally important evidence. A declined payment returns the held unit and prevents fulfilment. A stock conflict rejects the reservation and prevents payment itself. Both attempts remain visible with stopped milestones, which proves safe recovery instead of relying on a temporary alert message.",
                 "The separation between customer and technical language is also intentional. Shoppers see stock, payment and delivery terms they recognise. The repository explains Inventory Agent, Payment Agent, Fulfilment Agent, Delivery Agent and Notification Agent because those boundaries are useful for code review, testing and discussion of orchestration.",
                 "My final assessment is that the project achieves its declared scope. It is not a commercial store, but it is a reproducible demonstration of how an electronics order should preserve state across success and failure. The implementation, tests, figures, screenshots and limitations all describe the same behavior.",
             ],
@@ -217,7 +217,7 @@ def build_report() -> Path:
     return build_research_report(
         OUTPUT,
         "BigTech Electronics Store",
-        "Harika",
+        "Harika Reddy",
         [
             "This report presents an Indian electronics shopping project with 28 synthetic products across seven categories, website scoped Ezzie support, persistent browser inventory and a Java Spring Boot order service. The customer journey covers discovery, cart, checkout, stock conflict, payment failure, confirmation, an eight stage delivery timeline, order history and account availability.",
             "The order design uses five deterministic agents coordinated through typed results. Successful payment commits reserved stock, payment failure releases it and a stock conflict rejects the reservation before payment. Ten JavaScript tests and four Java tests verify the deployed browser rules and canonical backend behavior.",

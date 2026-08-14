@@ -127,7 +127,7 @@ The assistant is deterministic, website scoped and does not send customer messag
 
 The catalogue contains 28 synthetic products across seven categories. Versioned browser keys isolate the current schema for cart, orders and stock. Five public order examples make delivered, out for delivery, shipped, payment failed and stock changed behavior visible on a first visit.
 
-Browser storage is not presented as a production database or warehouse inventory system. It is a safe way to demonstrate connected state in a public portfolio project.
+Browser storage is not presented as a production database or warehouse inventory system. It is a contained way to demonstrate connected state without collecting personal customer data.
 
 ## 11. Verification
 

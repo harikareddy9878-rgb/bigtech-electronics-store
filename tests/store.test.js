@@ -77,4 +77,5 @@ test("confirmed order creates the complete customer delivery timeline", () => {
     "DELIVERED"
   ]);
   assert.equal(result.order.milestones.find(stage => stage.code === "PICKING").state, "CURRENT");
+  assert.equal(result.order.milestones.filter(stage => stage.occurredAt).every(stage => stage.occurredAt <= result.order.date), true);
 });

@@ -88,6 +88,7 @@ public class OrderCoordinator {
             );
         }
 
+        var committedInventory = inventoryAgent.commit(inventory.reservation());
         FulfilmentAgent.FulfilmentResult fulfilment = fulfilmentAgent.plan(request);
         workflow.add(fulfilment.step());
         DeliveryAgent.DeliveryResult delivery = deliveryAgent.schedule(createdAt, request.pincode());
@@ -100,7 +101,7 @@ public class OrderCoordinator {
                 fulfilment.estimatedDelivery(),
                 null,
                 "COMMITTED",
-                inventoryAgent.commit(inventory.reservation()),
+                committedInventory,
                 delivery.milestones(),
                 workflow
         );

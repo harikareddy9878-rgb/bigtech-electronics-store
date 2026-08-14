@@ -2,11 +2,15 @@
 
 BigTech is an Indian electronics shopping project that connects catalogue discovery, current stock, cart rules, simulated payment, inventory reservation, fulfilment, delivery tracking, order history and Ezzie customer support.
 
-Author: Harika
+Author: Harika Reddy
 
 [Open the live application](https://bigtech-electronics-store.vercel.app/)
 
-![BigTech storefront](evidence/bigtech_storefront.png)
+<p align="center">
+  <img src="evidence/bigtech_storefront_overview.png" width="880" alt="BigTech electronics storefront with catalogue, search and account navigation" />
+</p>
+
+<p align="center"><em>Figure 1. BigTech storefront and catalogue entry point.</em></p>
 
 ## Problem, root cause and purpose
 
@@ -43,7 +47,11 @@ Customers can complete the following journey.
 7. Review the before, held and after inventory quantity for every ordered item.
 8. Inspect recent activity and catalogue availability from the account area.
 
-![Cart and checkout](evidence/cart_checkout.png)
+<p align="center">
+  <img src="evidence/cart_checkout.png" width="820" alt="BigTech cart and checkout with delivery and payment controls" />
+</p>
+
+<p align="center"><em>Figure 2. Cart validation and reproducible checkout outcomes.</em></p>
 
 ## Inventory safeguards
 
@@ -57,6 +65,12 @@ BigTech models inventory as a reservation rather than subtracting stock before p
 
 Successful browser orders persist the new stock value in versioned local storage. A failed payment preserves the cart and releases the stock hold. A forced stock conflict marks the product unavailable in that browser, prevents payment and keeps the evidence visible in My orders.
 
+<p align="center">
+  <img src="reports/figures/04_inventory_transitions.png" width="780" alt="BigTech inventory reservation state transitions" />
+</p>
+
+<p align="center"><em>Figure 3. Inventory is committed, released or rejected according to the checkout result.</em></p>
+
 ## Multi agent order coordination
 
 The Spring Boot backend contains five bounded agents coordinated by `OrderCoordinator`.
@@ -69,13 +83,34 @@ The Spring Boot backend contains five bounded agents coordinated by `OrderCoordi
 
 The agents are deterministic Java components. They do not use a language model. This keeps each responsibility testable and makes failure recovery explicit. Agent names and workflow steps stay in the source and technical documentation; customers see normal order and delivery language.
 
+### Responsibility handoff
+
+| Order phase | Responsible component | Inventory effect | Customer evidence |
+| --- | --- | --- | --- |
+| Request accepted | Order Coordinator | No quantity change | Order received |
+| Availability check | Inventory Agent | Available units become reserved | Items reserved |
+| Payment | Payment Agent | Reservation is committed or released | Payment confirmed or declined |
+| Preparation | Fulfilment Agent | Committed stock belongs to the order | Picking and packed |
+| Transport | Delivery Agent | No further stock change | Shipped, out for delivery and delivered |
+| Final update | Notification Agent | Final result is recorded | My orders and Ezzie lookup |
+
+<p align="center">
+  <img src="reports/figures/05_delivery_lifecycle.png" width="820" alt="Eight stage BigTech order delivery lifecycle" />
+</p>
+
+<p align="center"><em>Figure 4. A confirmed order moves through eight customer visible delivery stages.</em></p>
+
 ## Ezzie support
 
 Ezzie is a website scoped conversational support layer. It can recommend an in stock product within a budget, explain the cart, stock, payment, delivery and return rules, and look up a saved BigTech order number. Order answers use the same stored order timeline shown on the order page.
 
 Requests outside the BigTech website receive a short scope response. Ezzie is deterministic and does not send customer messages to an external model.
 
-![Ezzie support](evidence/ezzie_assistant.png)
+<p align="center">
+  <img src="evidence/ezzie_support.png" width="760" alt="Ezzie customer support conversation in BigTech" />
+</p>
+
+<p align="center"><em>Figure 5. Ezzie uses catalogue and saved order data for support.</em></p>
 
 ## Architecture
 
