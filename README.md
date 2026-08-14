@@ -4,7 +4,7 @@ BigTech is an Indian electronics shopping project that connects catalogue discov
 
 Author: Harika Reddy
 
-[Open the live application](https://bigtech-electronics-store.vercel.app/)
+[Open the live application](https://bigtech-store.vercel.app/)
 
 <p align="center">
   <img src="evidence/bigtech_storefront_overview.png" width="880" alt="BigTech electronics storefront with catalogue, search and account navigation" />
