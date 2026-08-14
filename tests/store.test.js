@@ -21,6 +21,8 @@ test("payment failure has no delivery schedule", () => {
   assert.equal(result.ok, false);
   assert.equal(result.code, "PAYMENT_FAILED");
   assert.equal(result.order.delivery, undefined);
+  assert.equal(result.order.inventory.disposition, "RELEASED");
+  assert.equal(result.order.inventory.lines[0].availableAfter, result.order.inventory.lines[0].availableBefore);
 });
 
 test("Ezzie stays within the BigTech website", () => {
@@ -43,4 +45,36 @@ test("Ezzie understands gaming requests", () => {
   const response = answerEzzie("Suggest a gaming keyboard under 6000", { products, cart:[], orders:[] });
   assert.ok(response.productId);
   assert.equal(products.find(product => product.id === response.productId).category, "Gaming");
+});
+
+test("successful checkout commits reserved stock", () => {
+  const product = products.find(entry => entry.id === "BT-PH-101");
+  const result = createOrder({ cart:[{ id:product.id, quantity:1 }], products, address:{ pincode:"500081" }, paymentOutcome:"SUCCESS", now:new Date("2026-08-13T10:00:00Z") });
+  assert.equal(result.ok, true);
+  assert.equal(result.order.inventory.disposition, "COMMITTED");
+  assert.equal(result.order.inventory.lines[0].reserved, 1);
+  assert.equal(result.order.inventory.lines[0].availableAfter, product.stock - 1);
+});
+
+test("stock conflict stops before payment and rejects the reservation", () => {
+  const result = createOrder({ cart:[{ id:"BT-PH-101", quantity:1 }], products, address:{ pincode:"500081" }, paymentOutcome:"STOCK_CHANGED", now:new Date("2026-08-13T10:00:00Z") });
+  assert.equal(result.ok, false);
+  assert.equal(result.code, "STOCK_CHANGED");
+  assert.equal(result.order.inventory.disposition, "REJECTED");
+  assert.equal(result.order.workflow[1].status, "skipped");
+});
+
+test("confirmed order creates the complete customer delivery timeline", () => {
+  const result = createOrder({ cart:[{ id:"BT-AU-401", quantity:1 }], products, address:{ pincode:"500081" }, paymentOutcome:"SUCCESS", now:new Date("2026-08-13T10:00:00Z") });
+  assert.deepEqual(result.order.milestones.map(stage => stage.code), [
+    "ORDER_RECEIVED",
+    "INVENTORY_RESERVED",
+    "PAYMENT_APPROVED",
+    "PICKING",
+    "PACKED",
+    "SHIPPED",
+    "OUT_FOR_DELIVERY",
+    "DELIVERED"
+  ]);
+  assert.equal(result.order.milestones.find(stage => stage.code === "PICKING").state, "CURRENT");
 });

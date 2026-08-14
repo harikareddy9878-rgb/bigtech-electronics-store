@@ -1,6 +1,8 @@
 node_modules/
 .vercel/
 backend/target/
+__pycache__/
+*.py[cod]
 *.log
 
 .vercel
