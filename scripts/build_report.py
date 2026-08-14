@@ -5,7 +5,7 @@ from pathlib import Path
 from report_template import build_research_report
 
 ROOT = Path(__file__).resolve().parents[1]
-OUTPUT = ROOT / "reports/BigTech_Electronics_Store_Report.pdf"
+OUTPUT = ROOT / "reports/BigTech_Report.pdf"
 FIGURES = ROOT / "reports/figures"
 EVIDENCE = ROOT / "evidence"
 
@@ -16,7 +16,7 @@ def build_report() -> Path:
             "title": "Problem statement, root cause and purpose",
             "paragraphs": [
                 "BigTech is an Indian electronics shopping application that connects product discovery, current stock, cart rules, simulated checkout, payment outcomes, inventory reservation, fulfilment, delivery tracking, order history, account information and Ezzie support. I selected this problem because a visible storefront alone does not demonstrate the decisions that protect a customer order.",
-                "The root cause in many compact demonstrations is disconnected state. A product card may show one available quantity while the cart uses the original quantity, a failed payment may reduce stock permanently, and a confirmed order may stop at an order number without showing how it reaches delivery.",
+                "The root cause in many compact commerce projects is disconnected state. A product card may show one available quantity while the cart uses the original quantity, a failed payment may reduce stock permanently, and a confirmed order may stop at an order number without showing how it reaches delivery.",
                 "The purpose of BigTech is to make the complete lifecycle reproducible within a focused personal project. The customer interface remains simple, while JavaScript and Java contracts preserve the inventory, payment, fulfilment and delivery evidence behind each result.",
             ],
             "table": [
@@ -28,7 +28,7 @@ def build_report() -> Path:
             ],
         },
         {
-            "title": "Scope and demonstration data",
+            "title": "Scope and test data",
             "paragraphs": [
                 "The catalogue contains 28 synthetic products across phones, laptops, televisions, audio, appliances, wearables and gaming. Records include a stable product identifier, category, price, list price, rating, badge and starting stock. Prices are displayed in Indian rupees and the delivery calculation uses an Indian six digit pincode.",
                 "The dataset is deliberately compact because BigTech tests software state transitions rather than training a statistical model. Increasing the catalogue to thousands of repeated products would not improve the evidence for reservation release, payment stopping rules or delivery milestones.",
@@ -37,7 +37,7 @@ def build_report() -> Path:
             "figure": FIGURES / "02_catalogue_coverage.png",
             "caption": "Figure 1. Declared catalogue, category and public order coverage.",
             "explanation": [
-                ["Test question", "Does the demonstration contain enough varied records to exercise discovery and order behavior without claiming analytical scale?"],
+                ["Test question", "Does the prototype contain enough varied records to exercise discovery and order behavior without claiming analytical scale?"],
                 ["Observed result", "Twenty eight products cover seven categories and five first visit order states."],
                 ["Interpretation", "The bounded dataset supports repeatable software tests and keeps every scenario easy to inspect."],
             ],
@@ -46,14 +46,14 @@ def build_report() -> Path:
             "title": "Customer journey",
             "paragraphs": [
                 "A visitor can search, filter and sort the catalogue, review discount and stock, add an available item, change quantity within the current limit and inspect order totals. Ezzie can recommend an in stock product within a declared budget and add the suggestion to the same cart.",
-                "Checkout collects demonstration delivery details and provides three reproducible outcomes: successful payment, failed payment and an item becoming unavailable. Every result receives a saved order reference, including failures, so the stopping point and prevented side effects remain visible.",
+                "Checkout collects temporary delivery details and provides three reproducible outcomes: successful payment, failed payment and an item becoming unavailable. Every result receives a saved order reference, including failures, so the stopping point and prevented side effects remain visible.",
                 "Confirmed orders open a detailed journey with received, reserved, paid, picking, packed, shipped, out for delivery and delivered stages. The page also shows the inventory quantity before checkout, the amount held and the amount available after the branch completes.",
             ],
         },
         {
             "title": "System architecture",
             "paragraphs": [
-                "The public application is written with semantic HTML, responsive CSS and JavaScript modules. Product data is separate from calculations and order rules. Versioned local storage holds personal cart, order and stock state so the Vercel demonstration works without collecting accounts or payment information.",
+                "The public application is written with semantic HTML, responsive CSS and JavaScript modules. Product data is separate from calculations and order rules. Versioned local storage holds personal cart, order and stock state so the Vercel deployment works without collecting accounts or payment information.",
                 "A Java 17 Spring Boot service provides the independently testable order contract. OrderController validates the request and delegates to OrderCoordinator. The coordinator sends typed results through five bounded agents and returns inventory lines, customer milestones and an internal workflow trace.",
                 "The static browser workflow is contract compatible with the Java decisions. This is an explicit deployment boundary: the public site remains free and easy to inspect, while the backend can run locally or on a separate Java capable host.",
             ],
@@ -65,6 +65,62 @@ def build_report() -> Path:
                 ["Payment Agent", "Approve or decline simulation", "Completed or failed workflow step"],
                 ["Fulfilment and Delivery Agents", "Estimate, packing and milestones", "Delivery date and eight stages"],
                 ["Ezzie", "Website scoped support", "Catalogue, cart and order responses"],
+            ],
+        },
+        {
+            "title": "Frontend and API request architecture",
+            "paragraphs": [
+                "The customer interface is organised as reusable HTML pages, CSS components and JavaScript modules. Catalogue records are loaded separately from cart calculations, order rules and account views. Versioned local storage provides a stable browser state for cart, saved orders and stock changes.",
+                "Checkout creates one JSON order request. The request contains only the declared line items, simulated payment outcome and delivery details needed by the contract. The Spring Boot endpoint owns validation and returns a typed result; the browser does not infer a backend success from a redirect.",
+            ],
+            "figure": FIGURES / "08_frontend_api_architecture.png",
+            "caption": "Architecture detail A. Customer, browser state, JSON contract and Spring Boot request boundary.",
+            "explanation": [
+                ["Frontend responsibility", "The browser owns interaction and presentation, while order decisions remain behind the typed API contract."],
+                ["State responsibility", "Cart, browser stock and personal order history use one versioned local store."],
+                ["Failure rule", "A missing or invalid response becomes a visible stopped order and cannot silently create delivery state."],
+            ],
+        },
+        {
+            "title": "Java backend execution architecture",
+            "paragraphs": [
+                "OrderController accepts the request and delegates to OrderCoordinator. The coordinator applies dependency order across inventory, payment, fulfilment, delivery and notification. Each component returns a Java record that contains status, reason and state needed by the next component.",
+                "Inventory is checked before payment. A rejected reservation stops payment. A declined payment releases the reservation and stops fulfilment and delivery. Only an approved payment commits inventory and allows the delivery contract to be created.",
+            ],
+            "figure": FIGURES / "09_backend_order_architecture.png",
+            "caption": "Architecture detail B. Spring MVC controller, coordinator and backend responsibility sequence.",
+            "explanation": [
+                ["Control flow", "The coordinator controls execution order instead of allowing agents to call one another unpredictably."],
+                ["Typed handoff", "Every stage receives the earlier result and produces explicit evidence for completion, failure or skip."],
+                ["Backend skill", "The implementation demonstrates REST validation, Java service boundaries, immutable records, state transitions and JUnit verification."],
+            ],
+        },
+        {
+            "title": "Customer state and support architecture",
+            "paragraphs": [
+                "The order response contains three customer-facing evidence groups: the order result, an inventory snapshot and an eight-stage timeline. The same saved response powers the order detail page, recent activity and Ezzie order lookup.",
+                "This design prevents support from inventing a separate delivery message. Ezzie reads the stored order contract, while product recommendations resolve to current catalogue records and availability.",
+            ],
+            "figure": FIGURES / "10_customer_state_architecture.png",
+            "caption": "Architecture detail C. One order result reused by inventory evidence, delivery, history and support.",
+            "explanation": [
+                ["Single source", "The order page and Ezzie use the same status and milestone objects."],
+                ["Inventory evidence", "Before, held and after quantities explain whether units were committed, released or rejected."],
+                ["Support boundary", "Unknown order numbers return a not-found response instead of an invented shipment date."],
+            ],
+        },
+        {
+            "title": "Build, deployment and verification architecture",
+            "paragraphs": [
+                "The source repository, browser tests, Java tests, evidence capture and public hosting are separate repeatable stages. Node's test runner checks browser business rules. Maven and JUnit check the Java order service. The browser verification script captures the complete customer journey.",
+                "Vercel hosts the public static application. The Java service runs independently for local backend testing, so the report clearly distinguishes publicly hosted behaviour from the canonical service contract tested in the repository.",
+            ],
+            "figure": FIGURES / "11_delivery_architecture.png",
+            "caption": "Architecture detail D. Source control, cross-runtime tests, evidence capture and public hosting.",
+            "explanation": [
+                ["Quality gates", "JavaScript and JUnit verify their owning runtime before visual evidence is interpreted."],
+                ["Deployment boundary", "The static public site and separately executable Java backend are documented as different environments."],
+                ["Reproducibility", "A new user can run tests, start the Java service and reproduce browser scenarios without real payment information."],
             ],
         },
         {
@@ -135,6 +191,20 @@ def build_report() -> Path:
             ],
         },
         {
+            "title": "Actual cross-runtime test execution",
+            "paragraphs": [
+                "I reran both test suites for this report revision. The JavaScript suite completed ten tests with no failure. The Maven test phase completed four JUnit tests with no failure. Together they provide fourteen current automated checks.",
+                "The terminal evidence lists the runtime separately because a single combined bar can hide whether one service was skipped. The scenarios include both success and prevented side effects after payment or stock failure.",
+            ],
+            "figure": FIGURES / "12_test_execution.png",
+            "caption": "Test evidence. Current JavaScript and Java execution results for BigTech.",
+            "explanation": [
+                ["Browser rules", "Ten tests cover cart, fees, support scope, catalogue constraints, order state and milestones."],
+                ["Backend rules", "Four JUnit tests verify commit, release, rejection and full delivery behaviour."],
+                ["Result", "All fourteen tests pass and no failed test is excluded from the report."],
+            ],
+        },
+        {
             "title": "Browser verification experiment",
             "paragraphs": [
                 "Browser verification starts with cleared storage and follows a product through cart, checkout, confirmation, order detail and persisted stock. It then reproduces failed payment and stock changed outcomes, opens the account availability summary and asks Ezzie for product and order support.",
@@ -187,7 +257,7 @@ def build_report() -> Path:
                 "Products, stock, customer information, payment results, orders and delivery events are synthetic. Browser local storage is not a shared database and must not be interpreted as warehouse inventory. The static public site does not call the local Spring Boot service.",
                 "The project does not contain authentication, database transactions, real payment, reservation expiry, courier integration, returns settlement, fraud checks or production monitoring. The Java synchronization only protects one service process and is not a replacement for database level concurrency control.",
                 "These limitations define a clear project boundary. The implemented evidence supports claims about deterministic coordination, inventory recovery, delivery state and customer explanation, not commercial readiness.",
-                "The catalogue size must also be interpreted correctly. Twenty eight records provide category, price and stock variation for software tests; they do not represent commercial assortment, demand history or recommendation training data. Product ratings and discounts are demonstration values.",
+                "The catalogue size must also be interpreted correctly. Twenty eight records provide category, price and stock variation for software tests; they do not represent commercial assortment, demand history or recommendation training data. Product ratings and discounts are synthetic values.",
                 "Security review is limited to validated request fields, local browser persistence and the absence of payment credentials. A real service would require authenticated ownership checks, encryption policy, rate limiting, dependency scanning, audit events and a documented response to payment or account incidents.",
             ],
         },
@@ -210,7 +280,7 @@ def build_report() -> Path:
                 "The confirmed branch can be followed from start to finish. Inventory records the available quantity, the requested unit is held, payment is approved, the held quantity becomes committed, the delivery estimate is calculated and picking becomes the current milestone. The browser writes the new stock value and the saved order remains available for Ezzie lookup.",
                 "The two failure branches provide equally important evidence. A declined payment returns the held unit and prevents fulfilment. A stock conflict rejects the reservation and prevents payment itself. Both attempts remain visible with stopped milestones, which proves safe recovery instead of relying on a temporary alert message.",
                 "The separation between customer and technical language is also intentional. Shoppers see stock, payment and delivery terms they recognise. The repository explains Inventory Agent, Payment Agent, Fulfilment Agent, Delivery Agent and Notification Agent because those boundaries are useful for code review, testing and discussion of orchestration.",
-                "My final assessment is that the project achieves its declared scope. It is not a commercial store, but it is a reproducible demonstration of how an electronics order should preserve state across success and failure. The implementation, tests, figures, screenshots and limitations all describe the same behavior.",
+                "My final assessment is that the project achieves its declared scope. It is not a commercial store, but it provides reproducible evidence of how an electronics order should preserve state across success and failure. The implementation, tests, figures, screenshots and limitations all describe the same behavior.",
             ],
         },
     ]

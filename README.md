@@ -16,9 +16,9 @@ Author: Harika Reddy
 
 A small ecommerce project can look complete while its important business rules remain disconnected. Product cards may show one stock value, checkout may trust another, failed payments may still reduce stock, and a confirmed order may end with an order number instead of explaining what happens before delivery.
 
-The root cause is separate demonstration state for catalogue, cart, payment and orders. When those parts do not share one contract, the project cannot prove that it stops safely or preserves inventory.
+The root cause is separate state for catalogue, cart, payment and orders. When those parts do not share one contract, the project cannot prove that it stops safely or preserves inventory.
 
-I built BigTech to demonstrate one connected electronics order journey. The browser application and Java service follow the same rules for availability, reservation, payment, fulfilment and delivery. The storefront stays customer friendly, while the repository explains and tests the internal coordination.
+I built BigTech as one connected electronics order journey. The browser application and Java service follow the same rules for availability, reservation, payment, fulfilment and delivery. The storefront stays customer friendly, while the repository explains and tests the internal coordination.
 
 ## Verified result
 
@@ -41,7 +41,7 @@ Customers can complete the following journey.
 1. Search, filter and sort phones, laptops, televisions, audio, appliances, wearables and gaming products.
 2. Review Indian rupee prices, ratings, discount, current stock and cart quantity limits.
 3. Ask Ezzie for a product within a category or budget and add the suggestion to the cart.
-4. Enter an Indian delivery address and choose a successful payment, failed payment or stock changed demonstration.
+4. Enter an Indian delivery address and choose a controlled successful payment, failed payment or stock changed outcome.
 5. Receive a saved order reference for every success or failure branch.
 6. Open an order to follow received, reserved, paid, picking, packed, shipped, out for delivery and delivered stages.
 7. Review the before, held and after inventory quantity for every ordered item.
@@ -112,11 +112,26 @@ Requests outside the BigTech website receive a short scope response. Ezzie is de
 
 <p align="center"><em>Figure 5. Ezzie uses catalogue and saved order data for support.</em></p>
 
-## Architecture
+## Backend and application architecture
 
-The public application uses HTML, CSS and JavaScript modules. Versioned browser storage keeps the cart, personal demonstration orders and inventory changes on the visitor's device. This allows the public Vercel deployment to work without collecting personal data.
+The public application uses HTML, CSS and JavaScript modules. Versioned browser storage keeps the cart, personal orders and inventory changes on the visitor's device. This allows the public Vercel deployment to work without collecting personal data.
 
 The Java 17 Spring Boot service provides a separately testable `POST /api/orders` contract. It validates input, reserves stock, coordinates payment, releases or commits inventory, schedules fulfilment and returns typed workflow and delivery evidence.
+
+### Backend service map
+
+| Backend area | Java implementation | Verified behaviour |
+| --- | --- | --- |
+| REST boundary | `OrderController` and request records | Invalid or incomplete order input is rejected before orchestration |
+| Coordination | `OrderCoordinator` | Required steps run in dependency order and later work stops after failure |
+| Inventory | `InventoryAgent` and inventory service | All lines reserve together, then commit, release or reject |
+| Payment | `PaymentAgent` | Approval continues the order; decline releases stock and creates no delivery |
+| Fulfilment | `FulfilmentAgent` | Confirmed items receive picking, packing and estimated delivery data |
+| Delivery | `DeliveryAgent` | Eight typed customer milestones are returned in order |
+| Notification | `NotificationAgent` | Every branch receives a final recorded outcome |
+| Backend tests | Maven and JUnit | Four scenarios verify commit, release, rejection and delivery behaviour |
+
+The backend response contains the final order status, workflow trace, inventory snapshot and customer timeline. The browser saves that response for order details and Ezzie lookup instead of rebuilding backend state from display text.
 
 ```text
 Customer interface
@@ -184,4 +199,4 @@ cd backend && ./mvnw test
 
 ## Project report
 
-The [project report](reports/BigTech_Electronics_Store_Report.pdf) explains the problem, customer lifecycle, multi agent coordination, inventory transitions, delivery milestones, failure recovery, test evidence, limitations, reproducibility and conclusion.
+The [project report](reports/BigTech_Report.pdf) follows the customer journey from catalogue and cart through reservation, payment, fulfilment, delivery, failure recovery and test results.

@@ -93,16 +93,110 @@ def delivery_lifecycle() -> None:
     save("05_delivery_lifecycle.png")
 
 
+def architecture_flow(name: str, title: str, subtitle: str, stages: list[tuple[str, str, str]]) -> None:
+    figure, axis = plt.subplots(figsize=(11.5, 4.8))
+    axis.axis("off")
+    for index, (component, technology, responsibility) in enumerate(stages):
+        x = 0.035 + index * (0.93 / len(stages))
+        axis.text(
+            x,
+            0.55,
+            f"{component}\n\n{technology}\n{responsibility}",
+            ha="center",
+            va="center",
+            fontsize=9.2,
+            bbox={"boxstyle": "round,pad=0.85", "facecolor": "white", "edgecolor": "black"},
+        )
+        if index < len(stages) - 1:
+            axis.annotate("", xy=(x + 0.14, 0.55), xytext=(x + 0.08, 0.55), arrowprops={"arrowstyle": "->", "lw": 1.5})
+    axis.set_title(title, fontweight="bold", pad=22)
+    axis.text(0.5, 0.08, subtitle, transform=axis.transAxes, ha="center", fontsize=10)
+    save(name)
+
+
+def test_execution() -> None:
+    figure, axis = plt.subplots(figsize=(10.5, 5.5))
+    figure.patch.set_facecolor("#171717")
+    axis.set_facecolor("#171717")
+    axis.axis("off")
+    lines = [
+        "$ npm test",
+        "10 JavaScript tests passed | 0 failed",
+        "",
+        "$ cd backend && ./mvnw test -q",
+        "4 JUnit tests passed | 0 failed",
+        "",
+        "Verified scenarios:",
+        "available cart, out-of-stock block, delivery fee, payment failure,",
+        "Ezzie scope, product budget, stock commit, stock conflict and timeline.",
+    ]
+    for index, line in enumerate(lines):
+        axis.text(0.055, 0.9 - index * 0.095, line, transform=axis.transAxes, color="white" if index < 6 else "#d0d0d0", family="monospace", fontsize=11.5)
+    axis.set_title("Actual cross-runtime test execution", color="white", fontweight="bold", pad=16)
+    OUTPUT.mkdir(parents=True, exist_ok=True)
+    plt.savefig(OUTPUT / "12_test_execution.png", dpi=190, bbox_inches="tight", facecolor=figure.get_facecolor())
+    plt.close()
+
+
 def main() -> None:
     plt.style.use("grayscale")
     bar(["JavaScript", "Java"], [10, 4], "Passing automated tests by runtime", "Test cases", "01_test_suites.png")
-    bar(["Products", "Categories", "Public orders"], [28, 7, 5], "Declared demonstration data coverage", "Count", "02_catalogue_coverage.png")
+    bar(["Products", "Categories", "Public orders"], [28, 7, 5], "Declared test data coverage", "Count", "02_catalogue_coverage.png")
     workflow_matrix()
     inventory_transitions()
     delivery_lifecycle()
     bar(["Confirmed", "Payment failed", "Stock changed"], [8, 3, 2], "Order stages reached before stopping", "Milestone position", "06_scenario_progress.png")
     bar(["Storefront", "Checkout", "Order journey", "Inventory", "Ezzie"], [1, 1, 1, 1, 1], "Browser verification evidence", "Verified views", "07_browser_evidence.png")
-    print("Wrote seven report figures")
+    architecture_flow(
+        "08_frontend_api_architecture.png",
+        "Frontend and request boundary",
+        "The customer interface remains independent from deterministic order execution.",
+        [
+            ("Customer", "Browser", "search and checkout"),
+            ("Storefront", "HTML + CSS + JS", "catalogue, cart, account"),
+            ("State", "versioned localStorage", "cart, orders, stock"),
+            ("Order request", "JSON contract", "typed checkout input"),
+            ("Order API", "Spring Boot REST", "validation and response"),
+        ],
+    )
+    architecture_flow(
+        "09_backend_order_architecture.png",
+        "Java backend order execution",
+        "Each component owns one state transition and returns typed evidence.",
+        [
+            ("Controller", "Spring MVC", "validate request"),
+            ("Coordinator", "Java service", "control sequence"),
+            ("Inventory", "bounded component", "reserve or reject"),
+            ("Payment", "bounded component", "approve or release"),
+            ("Fulfilment", "Java records", "delivery milestones"),
+        ],
+    )
+    architecture_flow(
+        "10_customer_state_architecture.png",
+        "Order state returned to the customer",
+        "The same response drives the order page, profile history and Ezzie lookup.",
+        [
+            ("Order result", "typed JSON", "status and reason"),
+            ("Inventory", "snapshot", "before, held, after"),
+            ("Timeline", "eight milestones", "current and stopped"),
+            ("History", "local order store", "recent activity"),
+            ("Support", "Ezzie rules", "exact order lookup"),
+        ],
+    )
+    architecture_flow(
+        "11_delivery_architecture.png",
+        "Build, deployment and verification",
+        "Source, tests and public hosting remain separate, repeatable stages.",
+        [
+            ("Source", "Git + GitHub", "versioned implementation"),
+            ("Rules", "Node test runner", "browser business logic"),
+            ("Backend", "Maven + JUnit", "order service tests"),
+            ("Evidence", "browser script", "journey screenshots"),
+            ("Hosting", "Vercel", "public static store"),
+        ],
+    )
+    test_execution()
+    print("Wrote twelve report figures")
 
 
 if __name__ == "__main__":

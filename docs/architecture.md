@@ -88,7 +88,7 @@ Final quantity check fails
       +--> Attempt saved for explanation
 ```
 
-This branch represents another shopper taking the last unit between cart review and checkout. It is deliberately available as a checkout demonstration so the failure path can be reproduced.
+This branch represents another shopper taking the last unit between cart review and checkout. It is available as a controlled checkout scenario so the failure path can be reproduced.
 
 ## 7. Inventory state model
 
@@ -100,7 +100,7 @@ This branch represents another shopper taking the last unit between cart review 
 | Released | Payment failed and units returned | Available |
 | Rejected | Requested quantity could not be held | Terminal for the attempt |
 
-`InventoryService.reserve` validates every line before changing any quantity. This prevents a partial reservation when one cart item is unavailable. Its synchronized methods make the demonstration state transition atomic inside one service process.
+`InventoryService.reserve` validates every line before changing any quantity. This prevents a partial reservation when one cart item is unavailable. Its synchronized methods make the prototype state transition atomic inside one service process.
 
 ## 8. Delivery lifecycle
 
